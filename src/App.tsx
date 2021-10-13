@@ -15,9 +15,9 @@ export default function App() {
       <NavigationContainer>
         <AuthProvider>
           <Routes />
+          <MapView style={styles.map} />
         </AuthProvider>
       </NavigationContainer>
-      
     </SafeAreaView>
   );
 }
