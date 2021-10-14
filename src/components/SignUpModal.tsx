@@ -1,18 +1,27 @@
 import React from 'react';
+import { useNavigation } from '@react-navigation/native';
 import { View, Text, StyleSheet } from 'react-native'
-import { Button, HelperText, Modal, TextInput } from 'react-native-paper';
+import { Button, HelperText, Modal, Portal, TextInput } from 'react-native-paper';
 
-function isEmpty(str:string) {
-    return (!str || str.length === 0 );
-}
-const SignUp = ({navigation}) => {
+import {signUpProp} from '../routes/params/AuthStackParams'
 
+
+const SignUp = () => {
+    const navigation = useNavigation<signUpProp>();
+    function handleSignUp() {
+        console.log(email)
+        console.log(pw)
+        console.log(pw2)
+        navigation.navigate("SignIn")
+    }
     const [isVisible, setIsVisible] = React.useState(true)
 
     const [email, setEmail] = React.useState("")
     const [pw, setPw] = React.useState("")
     const [pw2, setPw2] = React.useState("")
-
+    function isEmpty(str:string) {
+        return (!str || str.length === 0 );
+    }
     const hasEmailError = () => {
         return isEmpty(email)
     }
@@ -21,10 +30,9 @@ const SignUp = ({navigation}) => {
         return (pw !== pw2 || isEmpty(pw) || isEmpty(pw2))
     }
 
-    const hideModal = () => {
-        setIsVisible(false)
-    }
+    
     return (
+        <Portal>
       <Modal visible={isVisible} 
       contentContainerStyle={styles.modalContainer} 
       dismissable={true}>
@@ -37,18 +45,23 @@ const SignUp = ({navigation}) => {
             <View style={ styles.formContainer }>
                 <View style={ styles.inputContainer }>
                     <TextInput 
-                    mode='outlined' label={'Email'}/>
+                    mode='outlined' label={'Email'}
+                    onChangeText={(email) => setEmail(email)}/>
+
                     <HelperText type="error" visible={hasEmailError()}>
                     Digite seu email
                     </HelperText>
+
                 </View>
                 <View style={ styles.inputContainer}>
                     <TextInput 
-                    mode='outlined' label={'Senha'}/>
+                    mode='outlined' label={'Senha'}
+                     onChangeText={(pw) => setPw(pw)}/>
                 </View>
                 <View style={ styles.inputContainer}>
                     <TextInput 
-                    mode='outlined' label={'Confirmar Senha'}/>
+                    mode='outlined' label={'Confirmar Senha'}
+                    onChangeText={() => setPw2(pw2)} />
                     <HelperText type="error" visible={hasPwError()}>
                         Digite a senha
                     </HelperText>
@@ -60,14 +73,15 @@ const SignUp = ({navigation}) => {
                 mode="contained" onPress={() => navigation.goBack() }>
                     Back
             </Button>    
-            <Button style={ styles.buttonStyle} color='red'
+            <Button style={ styles.buttonStyle } color='red'
             mode="contained" 
-            onPress={() => {setIsVisible(false); navigation.navigate("Sign in") }}>
+            onPress={() => { handleSignUp() }}>
                 Sign Up
             </Button>
         </View>
         </View>
     </Modal>
+    </Portal>
     )
 }
 
@@ -101,3 +115,5 @@ const styles = StyleSheet.create({
     
 });
 export default SignUp
+
+

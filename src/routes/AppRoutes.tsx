@@ -1,16 +1,17 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
+import Details from '../components/Detalhes';
+import { AppStackParamsList, detailsProp } from './params/AppStackParams';
 
-import Mapa from '../pages/map/Map';
-
-const AppStack = createStackNavigator();
+const AppStack = createStackNavigator<AppStackParamsList>();
 
 const AppRoutes: React.FC = () => (
-  <AppStack.Navigator>
+  <AppStack.Navigator 
+  screenOptions={{headerShown: false, presentation: "modal",}} >
     
-    <AppStack.Screen name="Maps" component={Mapa} />
-    <AppStack.Screen name="Detalhes" component={Mapa} />
-    <AppStack.Screen name="Maps" component={Mapa} />
+    <AppStack.Screen name="Details" 
+    component={Details} 
+    initialParams={{showModal:false}}  />
   </AppStack.Navigator>
 );
 

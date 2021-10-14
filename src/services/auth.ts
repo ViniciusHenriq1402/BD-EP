@@ -16,6 +16,6 @@ export function signIn(): Promise<Response> {
           email: "thiagomarinho@rockeseat.com.br",
         },
       });
-    }, 2000);
+    }, 1000);
   });
 }

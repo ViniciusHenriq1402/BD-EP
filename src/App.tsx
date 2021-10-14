@@ -2,11 +2,11 @@ import { NavigationContainer } from '@react-navigation/native';
 import 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { Dimensions, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, SafeAreaView, StyleSheet } from 'react-native';
 
 import Routes from './routes/index';
 import { AuthProvider } from "./contexts/auth";
-import MapView from 'react-native-maps';
+import Mapas from './pages/map/Map';
 
 export default function App() {
   return (
@@ -14,8 +14,10 @@ export default function App() {
 
       <NavigationContainer>
         <AuthProvider>
+          <StatusBar />
+          <Mapas />
           <Routes />
-          <MapView style={styles.map} />
+          
         </AuthProvider>
       </NavigationContainer>
     </SafeAreaView>
@@ -31,3 +33,4 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height,
   },
 });
+

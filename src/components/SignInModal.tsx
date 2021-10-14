@@ -1,17 +1,23 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { useContext } from 'react';
 import { View, Text, StyleSheet } from 'react-native'
 import { Button, Modal, Portal, TextInput } from 'react-native-paper';
 
 import { SplashScreen } from '../../../components/SplashScreen'
 import AuthContext from '../contexts/auth';
+import { signInProp } from '../routes/params/AuthStackParams';
 
 const SignIn: React.FC = () =>  {
   const {signed, signIn} =  useContext(AuthContext);
-    
+  const navigation = useNavigation<signInProp>();
+
     async function handleSign() {
       //criar function para verificar email e senha valido
-
+      
       signIn();
+    }
+    function handleSignUp(){
+      navigation.navigate("SignUp")
     }
     
     const [email, setEmail] = React.useState("");
@@ -44,7 +50,7 @@ const SignIn: React.FC = () =>  {
                     Sign In
                 </Button>
                 <Button style={styles.buttonStyle} color='red'
-                mode="contained" onPress={() => { navigation.navigate("Sign Up")}}>
+                mode="contained" onPress={() => { handleSignUp }}>
                     Sign Up
                 </Button>
             </View>
@@ -60,6 +66,7 @@ const styles = StyleSheet.create({
     backgroundColor:"white",
     justifyContent: "center",
     marginHorizontal: 16,
+    
   },
   container: {
     
