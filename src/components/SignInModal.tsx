@@ -25,6 +25,7 @@ const SignIn: React.FC = () =>  {
     const [isVisible, setIsVisible] = React.useState(true);
 
     return (
+    <>
       <Portal>
       <Modal visible={isVisible} 
       contentContainerStyle={styles.modalContainer} 
@@ -57,6 +58,7 @@ const SignIn: React.FC = () =>  {
         </View>
     </Modal>
     </Portal>
+    </>
     )
 }
 
