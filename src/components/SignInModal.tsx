@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { View, Text, StyleSheet } from 'react-native'
-import { Button, Modal, TextInput } from 'react-native-paper';
+import { Button, Modal, Portal, TextInput } from 'react-native-paper';
 
 import { SplashScreen } from '../../../components/SplashScreen'
 import AuthContext from '../contexts/auth';
@@ -19,6 +19,7 @@ const SignIn: React.FC = () =>  {
     const [isVisible, setIsVisible] = React.useState(true);
 
     return (
+      <Portal>
       <Modal visible={isVisible} 
       contentContainerStyle={styles.modalContainer} 
       dismissable={false}>
@@ -49,6 +50,7 @@ const SignIn: React.FC = () =>  {
             </View>
         </View>
     </Modal>
+    </Portal>
     )
 }
 
