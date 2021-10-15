@@ -14,8 +14,7 @@ export default function App() {
 
       <NavigationContainer>
         <AuthProvider>
-          <StatusBar />
-          <Mapas />
+         
           <Routes />
           
         </AuthProvider>

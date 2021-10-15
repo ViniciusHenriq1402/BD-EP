@@ -3,7 +3,6 @@ import React, { useContext } from 'react';
 import { View, Text, StyleSheet } from 'react-native'
 import { Button, Modal, Portal, TextInput } from 'react-native-paper';
 
-import { SplashScreen } from '../../../components/SplashScreen'
 import AuthContext from '../contexts/auth';
 import { signInProp } from '../routes/params/AuthStackParams';
 
@@ -17,7 +16,7 @@ const SignIn: React.FC = () =>  {
       signIn();
     }
     function handleSignUp(){
-      navigation.navigate("SignUp")
+      navigation.navigate("SignUp");
     }
     
     const [email, setEmail] = React.useState("");

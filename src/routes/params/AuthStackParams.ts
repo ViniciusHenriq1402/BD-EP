@@ -1,8 +1,8 @@
 import { StackNavigationProp } from "@react-navigation/stack";
 
 export type AuthStackParamsList = {
-    SignIn: {showModal:boolean};
-    SignUp: {showModal:boolean};
+    SignIn: {showModal:boolean} | undefined;
+    SignUp: {showModal:boolean} | undefined;
 }
 
 type signInProp = StackNavigationProp<AuthStackParamsList, 'SignIn'>;
