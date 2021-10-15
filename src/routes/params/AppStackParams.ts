@@ -6,5 +6,7 @@ export type AppStackParamsList = {
 }
 
 type detailsProp = StackNavigationProp<AppStackParamsList, 'Details'>;
+type mapasProp = StackNavigationProp<AppStackParamsList, 'Mapas'>;
 
 export type {detailsProp};
+export type {mapasProp}

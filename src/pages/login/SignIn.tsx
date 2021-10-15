@@ -1,18 +1,23 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { View, Text, StyleSheet } from 'react-native'
 import { Button, TextInput } from "react-native-paper";
-import { signUpProp } from "../../routes/params/AuthStackParams";
+import AuthContext from "../../contexts/auth";
+import { signInProp } from "../../routes/params/AuthStackParams";
 
-export default function SignUp() {
-    
+export default function SignIn() {
+
     //TODO:Validacao dos TextInput
-    
 
-    const navigation = useNavigation<signUpProp>()
 
+    const navigation = useNavigation<signInProp>()
+    const { signIn } =  useContext(AuthContext);
     const [email, setEmail] = React.useState("")
     const [pw, setPw] = React.useState("")
+    async function handleSign() {
+
+        signIn();
+    }
 
     return (
         <View style={styles.container}>
@@ -28,20 +33,15 @@ export default function SignUp() {
                   mode='outlined' label={'Senha'} secureTextEntry={true}
                   onChangeText={(text) => {setPw(text)}}/>
               </View>
-              <View style={{marginVertical: 10}}>
-                  <TextInput 
-                  mode='outlined' label={'Confirmar senha'} secureTextEntry={true}
-                  onChangeText={(text) => {setPw(text)}}/>
-              </View>
             </View>
             <View style={styles.buttonContainer}>
-                <Button style={styles.buttonStyle} 
-                mode="outlined" color="grey" onPress={() => navigation.goBack()}>
-                    Back
-                </Button>
                 <Button style={styles.buttonStyle} color="red" 
-                mode="contained" onPress={() => navigation.navigate("SignIn")}>
+                mode="outlined" onPress={() => navigation.navigate("SignUp")}>
                     Sign Up
+                </Button>
+                <Button style={styles.buttonStyle} 
+                mode="contained" onPress={handleSign}> 
+                    Sign In
                 </Button>
             </View>
         </View>

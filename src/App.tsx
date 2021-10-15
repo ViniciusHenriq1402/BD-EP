@@ -2,13 +2,14 @@ import { NavigationContainer } from '@react-navigation/native';
 import 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { Dimensions, SafeAreaView, StyleSheet } from 'react-native';
+import {  Platform, SafeAreaView, StyleSheet } from 'react-native';
 
 import Routes from './routes/index';
 import { AuthProvider } from "./contexts/auth";
-import Mapas from './pages/map/Map';
 
 export default function App() {
+  //NOTE: SafeAreaView nao compativel com android?
+
   return (
     <SafeAreaView style={styles.container}>
 
@@ -16,7 +17,6 @@ export default function App() {
         <AuthProvider>
          
           <Routes />
-          
         </AuthProvider>
       </NavigationContainer>
     </SafeAreaView>
@@ -26,10 +26,9 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  map: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
-  },
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+  }
+  
+ 
 });
 
