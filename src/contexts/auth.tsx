@@ -45,9 +45,10 @@ const AuthProvider: React.FC = ({ children }) => {
 
       if (storagedUser && storagedToken) {
         setUser(JSON.parse(storagedUser));
-        setIsLoading(false)
         //api.defaults.headers.Authorization = `Baerer ${storagedToken}`;
       }
+      setIsLoading(false)
+
     }
 
     loadStorageData();

@@ -9,14 +9,11 @@ const Routes: React.FC = () => {
   const { signed, isLoading } = useAuth();
   if (isLoading) {
     return (
-    <>
       <SplashScreen />
-    </>
     );
   }
   return( 
     <> 
-    
       { signed ? <AppRoutes /> : <AuthRoutes />}
     </>
     );
