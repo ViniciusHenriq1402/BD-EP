@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { View, Text, StyleSheet } from 'react-native'
 import { Button, TextInput } from "react-native-paper";
-import AuthContext from "../../contexts/auth";
+import { useAuth } from "../../contexts/auth";
 import { signInProp } from "../../routes/params/AuthStackParams";
 
 export default function SignIn() {
@@ -11,7 +11,7 @@ export default function SignIn() {
 
 
     const navigation = useNavigation<signInProp>()
-    const { signIn } =  useContext(AuthContext);
+    const { signIn } =  useAuth();
     const [email, setEmail] = React.useState("")
     const [pw, setPw] = React.useState("")
     async function handleSign() {

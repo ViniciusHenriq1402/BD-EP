@@ -1,21 +1,36 @@
-import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import { View, Text, StyleSheet, Dimensions } from "react-native";
+import { LocationObject } from "expo-location";
+import { View, StyleSheet } from "react-native";
 import MapView from 'react-native-maps';
+import { Marker } from "react-native-maps";
 import { FAB } from "react-native-paper";
-import { mapasProp } from "../../routes/params/AppStackParams";
+import { mapasProps } from "../../routes/params/AppStackParams";
 
 
 
-const Mapas: React.FC = () =>{
-  const navigation = useNavigation<mapasProp>()
+const Mapas: React.FC<mapasProps> = ( {navigation, route} ) =>{
+
+  const [location, setLocation] = React.useState<LocationObject>()
+
+  //testando useMemo
+  React.useMemo(() => {
+    (location)?console.log(location.coords):console.log("nao definido")
+  }, [location])
+
+  //testando useeffect
+  React.useEffect(() => {
+    setLocation(route.params?.locations)
+  })
   return (
     <View style={{...StyleSheet.absoluteFillObject}}>
-      <MapView style={ styles.map }/>
+      <MapView style={ styles.map }>
+        {(location) ? <Marker coordinate={{latitude:location.coords.latitude, longitude:location.coords.longitude}} title="teste" description="descricao"/> :undefined}
+        
+      </MapView>
       <FAB
       style={styles.fab}
       icon="plus"
-      onPress={() => navigation.navigate("Details", {showModal: true})}
+      onPress={() => {navigation.navigate("Details" ); }}
       />
 
     </View>
@@ -23,7 +38,7 @@ const Mapas: React.FC = () =>{
   )
 } 
 export default Mapas;
-
+//
 const styles = StyleSheet.create({
   
   map: {
@@ -32,7 +47,7 @@ const styles = StyleSheet.create({
   fab: {
     position: 'absolute',
     margin: 24,
-    right: 0,
+    left: 0,
     bottom: 0,
   },
   

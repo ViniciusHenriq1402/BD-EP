@@ -1,14 +1,22 @@
-import React, { useContext } from "react";
+import React from "react";
 
-import AuthContext from "../contexts/auth";
 import AuthRoutes from '../routes/AuthRoutes';
 import AppRoutes from '../routes/AppRoutes';
-import Mapas from "../pages/map/Map";
+import { SplashScreen } from "../components/SplashScreen";
+import { useAuth } from "../contexts/auth";
 
 const Routes: React.FC = () => {
-  const { signed } = useContext(AuthContext);
+  const { signed, isLoading } = useAuth();
+  if (isLoading) {
+    return (
+    <>
+      <SplashScreen />
+    </>
+    );
+  }
   return( 
     <> 
+    
       { signed ? <AppRoutes /> : <AuthRoutes />}
     </>
     );

@@ -5,6 +5,7 @@ import { Button } from "react-native-paper";
 import { homeProp } from "../../routes/params/AuthStackParams";
 
 export default function Home() {
+    
     const navigation = useNavigation<homeProp>()
 
     return (
