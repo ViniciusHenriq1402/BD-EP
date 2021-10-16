@@ -25,6 +25,9 @@ const Details: React.FC<detailsProps> = ({navigation, route}) =>{
 
 
   const getLocation = React.useCallback ( async () => {
+
+    const { signed } = useAuth()
+    React.useMemo(() => {(signed) ? null: Location.stopLocationUpdatesAsync(LOCATION_TASK)},[signed])
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         setErrorMsg('Permission to access location was denied');
@@ -42,7 +45,12 @@ const Details: React.FC<detailsProps> = ({navigation, route}) =>{
   }
 
   function handleSignOut() {
+    Location.stopLocationUpdatesAsync(LOCATION_TASK);
     signOut()
+  }
+
+  function stopUpdate() {
+    Location.stopLocationUpdatesAsync(LOCATION_TASK);
   }
 
 
@@ -51,7 +59,7 @@ const Details: React.FC<detailsProps> = ({navigation, route}) =>{
     await AsyncStorage.setItem('@RNPermission:string', status)
     if (status === 'granted') {
       await Location.startLocationUpdatesAsync(LOCATION_TASK, {
-        accuracy: Location.Accuracy.Balanced,
+        accuracy: Location.Accuracy.BestForNavigation,
         timeInterval: 20
       });
   }}
@@ -71,13 +79,14 @@ const Details: React.FC<detailsProps> = ({navigation, route}) =>{
             </View>
             <Text style={{ fontSize:16, fontWeight:"bold" }}>Latitude: {location?.coords.latitude} </Text>
             <Text style={{ fontSize:16, fontWeight:"bold" }}>Longitude: {location?.coords.longitude} </Text>
-            <View style={{marginVertical: 5, padding: 10, borderRadius: 10, width: '40%'}}>
+            <View style={{marginVertical: 5, padding: 10, borderRadius: 10,}}>
               <Button mode="contained" onPress={requestPermission}>Start background update</Button>
             </View>
             <Text style={{ fontSize:16, fontWeight:"bold" }}>BGlatitude: {locationBG?.coords.latitude} </Text>
             <Text style={{ fontSize:16, fontWeight:"bold" }}>BGlongitude: {locationBG?.coords.longitude} </Text>
-            <View style={{marginVertical: 5, padding: 10, borderRadius: 10, width: '40%'}}>
-              <Button mode="contained" onPress={handleSignOut}>Sign out</Button>
+            <View style={{marginVertical: 5, padding: 10, borderRadius: 10, flexDirection: "row", justifyContent:"center"}}>
+            <Button mode="contained" onPress={handleSignOut}>Sign out</Button>
+            <Button mode="contained" onPress={stopUpdate}>Stop update</Button>
             </View>
           </Modal>
       </Portal>
