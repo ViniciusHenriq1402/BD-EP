@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { createContext, useState } from "react";
 import api from "../services/api";
 import * as auth from "../services/auth";
-import { LOCATION_TASK } from "../tasks/LOCATION_TASK";
+import { LOCATION_TASK } from "../tasks/LocationTask";
 import Location from "expo-location"
 
 interface User {

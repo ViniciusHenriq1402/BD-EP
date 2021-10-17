@@ -20,5 +20,3 @@ const AppRoutes: React.FC = () => (
 );
 
 export default AppRoutes;
-
-//colocar screen para os detalhes e adicionar infec

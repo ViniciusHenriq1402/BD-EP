@@ -7,7 +7,7 @@ import { LocationObject } from "expo-location";
 
 import { detailsProps } from "../routes/params/AppStackParams";
 import { useAuth } from "../contexts/auth";
-import {LOCATION_TASK} from "../tasks/LOCATION_TASK";
+import {LOCATION_TASK} from "../tasks/LocationTask";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
