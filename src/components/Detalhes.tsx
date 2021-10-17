@@ -23,11 +23,11 @@ const Details: React.FC<detailsProps> = ({navigation, route}) =>{
   const [locationBG, setLocationBG] = React.useState<LocationObject>();
   const [errorMsg, setErrorMsg] = React.useState("");
 
+  //testando usememo
+  const { signed } = useAuth()
+  React.useMemo(() => {(signed) ? null: Location.stopLocationUpdatesAsync(LOCATION_TASK)},[signed])
 
   const getLocation = React.useCallback ( async () => {
-
-    const { signed } = useAuth()
-    React.useMemo(() => {(signed) ? null: Location.stopLocationUpdatesAsync(LOCATION_TASK)},[signed])
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         setErrorMsg('Permission to access location was denied');
