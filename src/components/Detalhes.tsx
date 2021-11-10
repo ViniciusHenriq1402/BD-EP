@@ -1,5 +1,4 @@
-import React, { useContext } from "react";
-import { useNavigation } from "@react-navigation/native";
+import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Button, Modal, Portal } from "react-native-paper";
 import * as Location from 'expo-location';
@@ -7,8 +6,7 @@ import { LocationObject } from "expo-location";
 
 import { detailsProps } from "../routes/params/AppStackParams";
 import { useAuth } from "../contexts/auth";
-import {LOCATION_TASK} from "../tasks/LocationTask";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import { useLocationTracking } from "../services/location/useLocation";
 
 
