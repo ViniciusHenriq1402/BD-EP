@@ -9,6 +9,7 @@ import { detailsProps } from "../routes/params/AppStackParams";
 import { useAuth } from "../contexts/auth";
 import {LOCATION_TASK} from "../tasks/LocationTask";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useLocationTracking } from "../services/location/useLocation";
 
 
 
@@ -20,18 +21,32 @@ const Details: React.FC<detailsProps> = ({navigation, route}) =>{
   const [isVisible, setIsVisible] = React.useState(navigation.isFocused);
   const [location, setLocation] = React.useState<LocationObject>();
 
-  const [locationBG, setLocationBG] = React.useState<LocationObject>();
   const [errorMsg, setErrorMsg] = React.useState("");
 
-   const getLocation = React.useCallback ( async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
+  const locations = useLocationTracking();
+
+   const getLocation =  async () => {
+    /* Note: Foreground permissions should be granted before asking for the background 
+    permissions (your app can't obtain background permission without foreground permission) */
+      let foregroundPermission= await Location.requestForegroundPermissionsAsync();
+
+      if (foregroundPermission.status !== 'granted') {
         setErrorMsg('Permission to access location was denied');
         return;
+      } else {
+        
+        let location = await Location.getCurrentPositionAsync({});
+        setLocation(location);
+
+        let backgroundPermission = await Location.requestBackgroundPermissionsAsync();
+        if (backgroundPermission.status !== 'granted') {
+          setErrorMsg('Permission to access background location was denied');
+          return;
+        } else {
+          locations.startTracking();
+        }
       }
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-    }, [])
+    }
 
   let text = 'Waiting..';
   if (errorMsg) {
@@ -41,24 +56,16 @@ const Details: React.FC<detailsProps> = ({navigation, route}) =>{
   }
 
   function handleSignOut() {
-    Location.stopLocationUpdatesAsync(LOCATION_TASK);
+   if (locations.isTracking) {
+    locations.stopTracking();
+    locations.clearTracking();
+   } 
     signOut()
   }
 
-  function stopUpdate() {
-    Location.stopLocationUpdatesAsync(LOCATION_TASK);
+  function clear() {
+    (locations.isTracking) ? locations.clearTracking(): undefined;
   }
-
-  const requestPermission = async () => {
-    const { status } = await Location.requestBackgroundPermissionsAsync();
-    await AsyncStorage.setItem('@RNPermission:string', status)
-    if (status === 'granted') {
-      await Location.startLocationUpdatesAsync(LOCATION_TASK, {
-        accuracy: Location.Accuracy.BestForNavigation,
-        timeInterval: 20
-      });
-  }}
-
 
   return (
       <Portal>
@@ -73,14 +80,14 @@ const Details: React.FC<detailsProps> = ({navigation, route}) =>{
           </View>
             <Text style={{ fontSize:16, fontWeight:"bold" }}>Latitude: {location?.coords.latitude} </Text>
             <Text style={{ fontSize:16, fontWeight:"bold" }}>Longitude: {location?.coords.longitude} </Text>
-          <View style={{marginVertical: 5, padding: 10, borderRadius: 10,}}>
+          {/* <View style={{marginVertical: 5, padding: 10, borderRadius: 10,}}>
             <Button mode="contained" onPress={requestPermission}>Start background update</Button>
           </View>
             <Text style={{ fontSize:16, fontWeight:"bold" }}>BGlatitude: {locationBG?.coords.latitude} </Text>
-            <Text style={{ fontSize:16, fontWeight:"bold" }}>BGlongitude: {locationBG?.coords.longitude} </Text>
+            <Text style={{ fontSize:16, fontWeight:"bold" }}>BGlongitude: {locationBG?.coords.longitude} </Text> */}
           <View style={{marginVertical: 5, padding: 10, borderRadius: 10, flexDirection: "row", justifyContent:"center"}}>
             <Button mode="contained" onPress={handleSignOut}>Sign out</Button>
-            <Button mode="contained" onPress={stopUpdate}>Stop update</Button>
+            <Button mode="contained" onPress={clear}>Clear Storage</Button>
           </View>
         </Modal>
       </Portal>

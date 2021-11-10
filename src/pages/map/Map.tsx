@@ -5,22 +5,38 @@ import MapView from 'react-native-maps';
 import { Marker } from "react-native-maps";
 import { FAB } from "react-native-paper";
 import { mapasProps } from "../../routes/params/AppStackParams";
+import { getLocations } from "../../services/location/storeLocation";
 
 
 
 const Mapas: React.FC<mapasProps> = ( {navigation, route} ) =>{
 
-  const [location, setLocation] = React.useState<LocationObject>()
+  const [location, setLocation] = React.useState<LocationObject>();
+  const [locations, setLocations] = React.useState<LocationObject[]>();
 
   //testando useeffect
   React.useEffect(() => {
     setLocation(route.params?.locations)
+    atualizaMarcador()
   })
+
+  const atualizaMarcador = React.useCallback(
+   async () => {
+      setLocations(await getLocations())
+    },
+    [],
+  )
+  /* React.useMemo( async () => {
+      setLocations(await getLocations())
+  },
+    [location],
+  ) */
   return (
     <View style={{...StyleSheet.absoluteFillObject}}>
       <MapView style={ styles.map }>
-        {(location) ? <Marker coordinate={{latitude:location.coords.latitude, longitude:location.coords.longitude}} title="teste" description="descricao"/> :undefined}
-        
+        {(locations)? locations.map((local) =>
+        <Marker key={local.timestamp} coordinate={{latitude:local.coords.latitude, longitude:local.coords.longitude}} /> )
+        : undefined}
       </MapView>
       <FAB
       style={styles.fab}
