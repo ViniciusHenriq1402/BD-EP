@@ -12,11 +12,6 @@ const Mapas: React.FC<mapasProps> = ( {navigation, route} ) =>{
 
   const [location, setLocation] = React.useState<LocationObject>()
 
-  //testando useMemo
-  React.useMemo(() => {
-    (location)?console.log(location.coords):console.log("nao definido")
-  }, [location])
-
   //testando useeffect
   React.useEffect(() => {
     setLocation(route.params?.locations)

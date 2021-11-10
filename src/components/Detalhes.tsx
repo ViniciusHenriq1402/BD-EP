@@ -23,11 +23,7 @@ const Details: React.FC<detailsProps> = ({navigation, route}) =>{
   const [locationBG, setLocationBG] = React.useState<LocationObject>();
   const [errorMsg, setErrorMsg] = React.useState("");
 
-  //testando usememo
-  const { signed } = useAuth()
-  React.useMemo(() => {(signed) ? null: Location.stopLocationUpdatesAsync(LOCATION_TASK)},[signed])
-
-  const getLocation = React.useCallback ( async () => {
+   const getLocation = React.useCallback ( async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         setErrorMsg('Permission to access location was denied');
@@ -53,7 +49,6 @@ const Details: React.FC<detailsProps> = ({navigation, route}) =>{
     Location.stopLocationUpdatesAsync(LOCATION_TASK);
   }
 
-
   const requestPermission = async () => {
     const { status } = await Location.requestBackgroundPermissionsAsync();
     await AsyncStorage.setItem('@RNPermission:string', status)
@@ -66,32 +61,30 @@ const Details: React.FC<detailsProps> = ({navigation, route}) =>{
 
 
   return (
-    <>
       <Portal>
         <Modal visible={isVisible}
             contentContainerStyle={styles.modalContainer}
             onDismiss={() => {navigation.navigate("Mapas", {locations: location} ); setIsVisible(false);}}>
-            <Text style={{fontSize: 50}}>DETALHES</Text>
-            <View style={{marginVertical: 5, padding: 10, borderRadius: 10, width: '40%'}}>
+          <Text style={{fontSize: 50}}>DETALHES</Text>
+          <View style={{marginVertical: 5, padding: 10, borderRadius: 10, width: '40%'}}>
               <Button 
               mode="contained" onPress={getLocation} 
               >Get Location</Button>
-            </View>
+          </View>
             <Text style={{ fontSize:16, fontWeight:"bold" }}>Latitude: {location?.coords.latitude} </Text>
             <Text style={{ fontSize:16, fontWeight:"bold" }}>Longitude: {location?.coords.longitude} </Text>
-            <View style={{marginVertical: 5, padding: 10, borderRadius: 10,}}>
-              <Button mode="contained" onPress={requestPermission}>Start background update</Button>
-            </View>
+          <View style={{marginVertical: 5, padding: 10, borderRadius: 10,}}>
+            <Button mode="contained" onPress={requestPermission}>Start background update</Button>
+          </View>
             <Text style={{ fontSize:16, fontWeight:"bold" }}>BGlatitude: {locationBG?.coords.latitude} </Text>
             <Text style={{ fontSize:16, fontWeight:"bold" }}>BGlongitude: {locationBG?.coords.longitude} </Text>
-            <View style={{marginVertical: 5, padding: 10, borderRadius: 10, flexDirection: "row", justifyContent:"center"}}>
+          <View style={{marginVertical: 5, padding: 10, borderRadius: 10, flexDirection: "row", justifyContent:"center"}}>
             <Button mode="contained" onPress={handleSignOut}>Sign out</Button>
             <Button mode="contained" onPress={stopUpdate}>Stop update</Button>
-            </View>
-          </Modal>
+          </View>
+        </Modal>
       </Portal>
-    </>
-  )
+    )
 }
 
 const styles = StyleSheet.create({
