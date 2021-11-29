@@ -14,7 +14,7 @@ const Mapas: React.FC<mapasProps> = ( {navigation, route} ) =>{
   const [location, setLocation] = React.useState<LocationObject>();
   const [locations, setLocations] = React.useState<LocationObject[]>();
 
-  //testando useeffect
+ /*  //testando useeffect
   React.useEffect(() => {
     setLocation(route.params?.locations)
     atualizaMarcador()
@@ -25,18 +25,14 @@ const Mapas: React.FC<mapasProps> = ( {navigation, route} ) =>{
       setLocations(await getLocations())
     },
     [],
-  )
-  /* React.useMemo( async () => {
-      setLocations(await getLocations())
-  },
-    [location],
   ) */
+ 
   return (
     <View style={{...StyleSheet.absoluteFillObject}}>
       <MapView style={ styles.map }>
         {(locations)? locations.map((local) =>
         <Marker key={local.timestamp} coordinate={{latitude:local.coords.latitude, longitude:local.coords.longitude}} /> )
-        : undefined}
+        : <></>}
       </MapView>
       <FAB
       style={styles.fab}
