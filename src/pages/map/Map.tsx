@@ -6,6 +6,7 @@ import { Marker } from "react-native-maps";
 import { FAB } from "react-native-paper";
 import { mapasProps } from "../../routes/params/AppStackParams";
 import { getLocations } from "../../services/location/storeLocation";
+import api, { issick } from "../../services/api";
 
 
 
@@ -26,6 +27,16 @@ const Mapas: React.FC<mapasProps> = ( {navigation, route} ) =>{
     },
     [],
   ) */
+
+  React.useEffect( () => {
+    const interval = setInterval(async () => {
+      const response = await issick();
+      console.log( "resposta " + response);
+    }, 1000)
+    return () => {
+      clearInterval(interval)
+    }
+  }, [])
  
   return (
     <View style={{...StyleSheet.absoluteFillObject}}>

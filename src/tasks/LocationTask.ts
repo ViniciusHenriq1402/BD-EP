@@ -15,8 +15,10 @@ TaskManager.defineTask('background-location-task', async( { data: locations , er
     //locations eh LocationObjetct[]
     //{loc: [{"locations":["coords":[object], "timestamp": integer]}]}
     const location = Object.values(locations)[0][0] as LocationObject;
-    console.log(location.coords);
-    await posicao(location.coords.latitude, location.coords.longitude);
+    
+    const response = await posicao(location.coords.latitude, location.coords.longitude);
+    console.log( "resposta " + response);
+
   }
 })
 

@@ -14,7 +14,7 @@ TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
     //pode ser void ou string
     const response = await issick();
 
-    console.log(response);
+    console.log( "resposta " + response);
     
     // return pra onde?
     return response ? BackgroundFetch.Result.NewData : BackgroundFetch.Result.NoData;

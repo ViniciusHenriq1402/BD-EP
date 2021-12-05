@@ -26,12 +26,14 @@ const api = axios.create({
  */
 
 //POST http://HOST[:PORT]/login
-export async function signIn(): Promise<string|void>{
+export async function signIn(name:string, pw:string): Promise<string|void>{
   const response = await api.post<string>('/login', {
-    user: "tony", password: "batata"
-}).then(response => response.data)
-.catch(error => console.log(error))
+    user: name, password: pw
+  }).then(response => response.data)
+  .catch(error => console.log(error))
   
+  console.log(`signIn com ${name} e ${pw}`);
+
   return response;
   
 }
@@ -47,6 +49,8 @@ export async function issick(): Promise<string | void> {
   .then(response => response.data)
   .catch(error => console.log(error));
 
+  console.log( "issick com token " + token );
+  
   return response;
 }
 
@@ -59,7 +63,9 @@ export async function posicao(latitude:number, longitude:number) {
     lon: longitude
   })
   .catch(error => console.log(error))
-
+  
+  console.log( `posicao com latitude ${latitude} e longitude ${longitude}`);
+  
 }
 
 export default api;
