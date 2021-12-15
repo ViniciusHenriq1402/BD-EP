@@ -11,6 +11,7 @@ export default function SignUp() {
 
     const navigation = useNavigation<signUpProp>()
 
+    const [cpf, setCpf] = React.useState("")
     const [email, setEmail] = React.useState("")
     const [pw, setPw] = React.useState("")
 
@@ -18,21 +19,26 @@ export default function SignUp() {
         <View style={styles.container}>
           <Text style={{ fontWeight:"500", fontSize:24, alignSelf:"center", marginTop:20}}>Fazer login</Text>
             <View style={ styles.signInContainer }>
-              <View style={{marginVertical: 10}}>
+                <View style={{marginVertical: 10}}>
+                  <TextInput 
+                  mode='outlined' label={'CPF'} 
+                  onChangeText={(text) => {setCpf(text)}}/>
+                </View>
+                <View style={{marginVertical: 10}}>
                   <TextInput 
                   mode='outlined' label={'Email'} 
                   onChangeText={(text) => {setEmail(text)}}/>
-                  </View>
-              <View style={{marginVertical: 10}}>
+                </View>
+                <View style={{marginVertical: 10}}>
                   <TextInput 
                   mode='outlined' label={'Senha'} secureTextEntry={true}
                   onChangeText={(text) => {setPw(text)}}/>
-              </View>
-              <View style={{marginVertical: 10}}>
-                  <TextInput 
-                  mode='outlined' label={'Confirmar senha'} secureTextEntry={true}
-                  onChangeText={(text) => {setPw(text)}}/>
-              </View>
+                </View>
+                <View style={{marginVertical: 10}}>
+                    <TextInput 
+                    mode='outlined' label={'Confirmar senha'} secureTextEntry={true}
+                    onChangeText={(text) => {setPw(text)}}/>
+                </View>
             </View>
             <View style={styles.buttonContainer}>
                 <Button style={styles.buttonStyle} 

@@ -26,9 +26,9 @@ const AuthProvider: React.FC = ({ children }) => {
 
   async function signIn() {
     
-    var name = "tony";
+    var cpf = "tony";
     var pw = "batata";
-    const response = await api.signIn(name, pw);
+    const response = await api.signIn(cpf, pw);
 
     if(response) {
       

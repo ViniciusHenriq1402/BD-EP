@@ -3,9 +3,9 @@ import axios from 'axios';
 
 const api = axios.create({
   //emulador
-  //baseURL: 'http://10.0.2.2:8080',
+  baseURL: 'http://10.0.2.2:8080',
   
-  baseURL: 'http://192.168.15.11:8080',
+  //baseURL: 'http://192.168.15.11:8080',
 
 });
 
@@ -26,16 +26,15 @@ const api = axios.create({
  */
 
 //POST http://HOST[:PORT]/login
-export async function signIn(name:string, pw:string): Promise<string|void>{
+export async function signIn( cpf:string, pw:string ): Promise<string | void>{
   const response = await api.post<string>('/login', {
-    user: name, password: pw
+    name: cpf, password: pw
   }).then(response => response.data)
   .catch(error => console.log(error))
   
-  console.log(`signIn com ${name} e ${pw}`);
-
+  console.log(`signIn com ${cpf} e ${pw}`);
+ 
   return response;
-  
 }
 
 //GET http://HOST[:PORT]/issick?token={token}
@@ -55,17 +54,18 @@ export async function issick(): Promise<string | void> {
 }
 
 //POST http://HOST[:PORT]/posicao
-export async function posicao(latitude:number, longitude:number) {
+export async function posicao(latitude:number, longitude:number): Promise<string | void> {
   const token = await AsyncStorage.getItem('@RNAuth:token') 
-  const response = await api.post('/posicao', {
+  const response = await api.post<string>('/posicao', {
     token: token,
     lat: latitude,
     lon: longitude
   })
+  .then(response => response.data)
   .catch(error => console.log(error))
-  
+
   console.log( `posicao com latitude ${latitude} e longitude ${longitude}`);
-  
+  return response
 }
 
 export default api;

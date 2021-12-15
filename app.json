@@ -41,5 +41,8 @@
         }
       ]
     ]
+  },
+  "android": {
+    "permissions": ["ACCESS_BACKGROUND_LOCATION"]
   }
 }

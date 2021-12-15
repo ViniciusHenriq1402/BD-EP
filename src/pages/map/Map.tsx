@@ -5,42 +5,47 @@ import MapView from 'react-native-maps';
 import { Marker } from "react-native-maps";
 import { FAB } from "react-native-paper";
 import { mapasProps } from "../../routes/params/AppStackParams";
+import { issick } from "../../services/api";
+import { useLocationTracking } from "../../services/location/useLocation";
 import { getLocations } from "../../services/location/storeLocation";
-import api, { issick } from "../../services/api";
 
 
 
 const Mapas: React.FC<mapasProps> = ( {navigation, route} ) =>{
 
-  const [location, setLocation] = React.useState<LocationObject>();
   const [locations, setLocations] = React.useState<LocationObject[]>();
 
- /*  //testando useeffect
-  React.useEffect(() => {
-    setLocation(route.params?.locations)
+  const locationTrack = useLocationTracking();
+
+   //testando useeffect
+ /*  React.useEffect(() => {
     atualizaMarcador()
   })
 
-  const atualizaMarcador = React.useCallback(
-   async () => {
+  const atualizaMarcador = async () => {
       setLocations(await getLocations())
-    },
-    [],
-  ) */
+  } */
+  
+ 
 
-  React.useEffect( () => {
-    const interval = setInterval(async () => {
+   React.useEffect( () => {
+     /*  const interval = setInterval(async () => {
       const response = await issick();
       console.log( "resposta " + response);
-    }, 1000)
-    return () => {
+    }, 100000) */
+      
+      locationTrack.startTracking();
+      
+    /* return () => {
       clearInterval(interval)
-    }
-  }, [])
+    } */
+  }, []) 
+
+  
  
   return (
     <View style={{...StyleSheet.absoluteFillObject}}>
-      <MapView style={ styles.map }>
+      <MapView  style={{flex:1}} >
         {(locations)? locations.map((local) =>
         <Marker key={local.timestamp} coordinate={{latitude:local.coords.latitude, longitude:local.coords.longitude}} /> )
         : <></>}
@@ -59,9 +64,7 @@ export default Mapas;
 //
 const styles = StyleSheet.create({
   
-  map: {
-    flex:1
-  },
+
   fab: {
     position: 'absolute',
     margin: 24,

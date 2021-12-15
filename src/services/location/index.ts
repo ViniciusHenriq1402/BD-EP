@@ -2,11 +2,16 @@ import * as Location from 'expo-location'
 import { LOCATION_TASK } from '../../tasks/LocationTask';
 
 export async function isTrackingLocation(): Promise<boolean>{
-    return await Location.hasStartedLocationUpdatesAsync(LOCATION_TASK);
-}
+    const isTracking = await Location.hasStartedLocationUpdatesAsync(LOCATION_TASK)
+    .then( () => true, () => false)
+    .catch(error => console.log(error))
+    //TODO: Check with logs
+    return isTracking as boolean;
+  }
 
 export async function stopTracking(){
-    await Location.stopLocationUpdatesAsync(LOCATION_TASK);
+    await Location.stopLocationUpdatesAsync(LOCATION_TASK)
+    .catch(error => console.log(error));
 }
 
 export async function startTracking() {
@@ -16,11 +21,11 @@ export async function startTracking() {
       if (status === 'granted') {
         await Location.startLocationUpdatesAsync(LOCATION_TASK, {
           accuracy: Location.Accuracy.BestForNavigation,
-          timeInterval: 10 * 1000,
+          
           // android behavior
           foregroundService: {
-            notificationTitle: 'tatatatataa',
-            notificationBody: 'notificacaooooo',
+            notificationTitle: 'teste notificacao',
+            notificationBody: 'notif body',
             notificationColor: '#333333',
           },
         });

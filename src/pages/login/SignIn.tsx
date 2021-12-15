@@ -8,11 +8,10 @@ import { signInProp } from "../../routes/params/AuthStackParams";
 export default function SignIn() {
 
     //TODO:Validacao dos TextInput
-
-
+    
     const navigation = useNavigation<signInProp>()
     const { signIn } =  useAuth();
-    const [email, setEmail] = React.useState("")
+    const [cpf, setCpf] = React.useState("")
     const [pw, setPw] = React.useState("")
     async function handleSign() {
 
@@ -25,8 +24,8 @@ export default function SignIn() {
             <View style={ styles.signInContainer }>
               <View style={{marginVertical: 10}}>
                   <TextInput 
-                  mode='outlined' label={'Email'} 
-                  onChangeText={(text) => {setEmail(text)}}/>
+                  mode='outlined' label={'CPF'} 
+                  onChangeText={(text) => {setCpf(text)}}/>
                   </View>
               <View style={{marginVertical: 10}}>
                   <TextInput 
@@ -66,6 +65,5 @@ const styles = StyleSheet.create({
         margin: 10,
         padding: 10,
     },
-    
 
 })

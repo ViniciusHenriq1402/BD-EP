@@ -6,10 +6,7 @@ import { issick } from "../services/api";
 export const BACKGROUND_FETCH_TASK = "background-fetch-issick"
 
 TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
-    const now = Date.now();
-  
-    console.log(`Got background fetch call at date: ${new Date(now).toISOString()}`);
-    
+
     //dados da resposta do backend
     //pode ser void ou string
     const response = await issick();
@@ -34,7 +31,6 @@ TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
 
   export async function getStatusBGAsync(){
     const status = await BackgroundFetch.getStatusAsync()
-    return status
-    
+    return status;
     
   }
