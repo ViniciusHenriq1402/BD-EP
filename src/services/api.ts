@@ -4,7 +4,7 @@ import axios from 'axios';
 const api = axios.create({
   //emulador
   baseURL: 'http://10.0.2.2:8080',
-  
+  //fisico
   //baseURL: 'http://192.168.15.11:8080',
 
 });
@@ -32,7 +32,7 @@ export async function signIn( cpf:string, pw:string ): Promise<string | void>{
   }).then(response => response.data)
   .catch(error => console.log(error))
   
-  console.log(`signIn com ${cpf} e ${pw}`);
+  console.log(`[api] signIn com ${cpf} e ${pw}`);
  
   return response;
 }
@@ -48,7 +48,7 @@ export async function issick(): Promise<string | void> {
   .then(response => response.data)
   .catch(error => console.log(error));
 
-  console.log( "issick com token " + token );
+  console.log( "[api] issick com token " + token );
   
   return response;
 }
@@ -64,7 +64,7 @@ export async function posicao(latitude:number, longitude:number): Promise<string
   .then(response => response.data)
   .catch(error => console.log(error))
 
-  console.log( `posicao com latitude ${latitude} e longitude ${longitude}`);
+  console.log( `[api] posicao com latitude ${latitude} e longitude ${longitude}`);
   return response
 }
 
