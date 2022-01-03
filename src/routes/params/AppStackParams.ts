@@ -3,8 +3,10 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { LocationObject } from "expo-location";
 
 export type AppStackParamsList = {
-    Details: {locations: LocationObject[] } | undefined ;
-    Mapas: {locations:LocationObject[] } | undefined;
+    Details: undefined ;
+    Mapas:  undefined;
+    Status: undefined;
+    Profile: undefined;
 }
 type detailsNavProp = StackNavigationProp<AppStackParamsList, 'Details'>;
 type detailsRouteProp = RouteProp<AppStackParamsList, 'Details'>;

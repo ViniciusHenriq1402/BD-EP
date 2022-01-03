@@ -1,11 +1,12 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as TaskManager from "expo-task-manager";
 import React, { createContext, useState } from "react";
 import * as api from "../services/api";
-import { registerBackgroundFetchAsync, unregisterBackgroundFetchAsync } from "../tasks/BackgroundFetch";
+import { registerBackgroundFetchAsync } from "../tasks/BackgroundFetch";
 
 interface User {
-  name: string;
-  email: string;
+  document: string;
+  token: string;
 }
 
 interface AuthContextData {
@@ -14,6 +15,7 @@ interface AuthContextData {
   isLoading: boolean;
   signIn(): Promise<void>;
   signOut(): void;
+  token: string | null;
 } 
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
@@ -22,22 +24,26 @@ const AuthProvider: React.FC = ({ children }) => {
   
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [alerta, setAlerta] = useState(false)
+  const [token, setToken] = useState<string | null>(null);
 
   async function signIn() {
     
     var cpf = "tony";
     var pw = "batata";
-    const response = await api.signIn(cpf, pw);
-
+    let response = await api.postUserLogin(cpf, pw);
+    response = "wadsa"
     if(response) {
       
-      const user: User = {name: "tony", email: "batata@batata"}
+      const user: User = {document: "tony", token: "tokenaaaaa"} 
 
-      console.log( "resposta " + response )
-      await AsyncStorage.setItem('@RNAuth:token', response );
-      await AsyncStorage.setItem('@RNAuth:user', JSON.stringify( user ));
+      await AsyncStorage.setItem('@RNAuth:token', 'tokentemporario' );
+      /*  await AsyncStorage.setItem('@RNAuth:user', JSON.stringify( user )); */
+      //object user temporario 
       setUser( user )
+      
+      
+      setToken('tokentemporario')
+      console.log( "login token", token )
       registerBackgroundFetchAsync()
     
     } 
@@ -49,39 +55,38 @@ const AuthProvider: React.FC = ({ children }) => {
 
   async function signOut() {
     await AsyncStorage.clear();
-    unregisterBackgroundFetchAsync()
+    TaskManager.unregisterAllTasksAsync();
     setUser(null);
   }
 
  React.useEffect(() => {
 
     async function loadStorageData() {
-      const storagedUser = await AsyncStorage.getItem('@RNAuth:user');
+      /* const storagedUser = await AsyncStorage.getItem('@RNAuth:user'); */
       const storagedToken = await AsyncStorage.getItem('@RNAuth:token');
-
-      if (storagedUser && storagedToken) {
-        setUser(JSON.parse(storagedUser));
-        //api.defaults.headers.Authorization = `Baerer ${storagedToken}`;
+      const storagedIssick = await AsyncStorage.getItem('@Api:issick');
+      if (/* storagedUser && */ storagedToken) {
+        const user: User = {document: "tony", token: "tokenaaaaa"} 
+        
+        setUser(user);
+        setToken(storagedToken)
+        //console.log(`token ${storagedToken}`)
+        console.log( "login token", storagedToken )
+        
       }
       setIsLoading(false)
+
+      if (storagedIssick){
+        await AsyncStorage.removeItem('@Api:issick')
+      } 
     }
     
     loadStorageData();
 
-  }),[]; 
+  },[]); 
   
-  //caso precise dar um alerta
-  /* React.useEffect(() => {
-      if(alerta){
-        alert("alerta get")
-        setAlerta(false)
-      }
-      console.log("nenhuma notif"); 
-  }, [alerta]) */
-  
-
   return (
-    <AuthContext.Provider value={{ signed: !!user, user, isLoading, signIn, signOut }}>
+    <AuthContext.Provider value={{ signed: !!user, user, isLoading, signIn, signOut, token }}>
       {children}
     </AuthContext.Provider>
   );

@@ -11,7 +11,6 @@ import validatePw from "../../helper/validatePw";
 
 export default function SignUp() {
     
-    //TODO:Validacao dos TextInput
     const navigation = useNavigation<signUpProp>()
 
     const [cpf, setCpf] = React.useState("")
@@ -21,7 +20,7 @@ export default function SignUp() {
     const [cpfError, setCpfError]= React.useState("")
     const [emailError, setEmailError] = React.useState("")
     const [pwError, setPwError] = React.useState("")
-    const [pw2Error, setPw2Error] = React.useState("")
+    //const [pw2Error, setPw2Error] = React.useState("")
 
     function cadastroApertado(){
         const cpfE = validateCPF(cpf);
@@ -40,7 +39,7 @@ export default function SignUp() {
             setCpfError("")
             setEmailError("")
             setPwError("")
-            setPw2Error("")
+            //setPw2Error("")
             navigation.navigate("SignIn")
         }
     }
@@ -49,33 +48,47 @@ export default function SignUp() {
         <View style={styles.container}>
           <Text style={{ fontWeight:"500", fontSize:24, alignSelf:"center", marginTop:20}}>Cadastro</Text>
             <View style={ styles.signInContainer }>
-                <View style={{marginVertical: 0}}>
+                <View style={styles.textInputContainer}>
+                    <TextInput 
+                        mode='outlined' 
+                        label={'Nome Completo'} 
+                        style={styles.textInputStyle}
+                    />
+                    <HelperText type="error" visible={true}>{/*erro no nome?*/ }</HelperText>
+
+                </View>
+                <View style={styles.textInputContainer}>
                     <TextInput 
                         mode='outlined' 
                         label={'CPF'} 
                         onChangeText={(text) => {setCpf(text)}}
+                        style={styles.textInputStyle}
+
                     />
                     <HelperText type="error" visible={true}>{cpfError}</HelperText>
 
                 </View>
-                <View style={{marginVertical: 5}}>
+                <View style={styles.textInputContainer}>
                     <TextInput 
                         mode='outlined' label={'Email'} 
                         onChangeText={(text) => {setEmail(text)}}
+                        style={styles.textInputStyle}
                     />
                     <HelperText type="error" visible={true}>{emailError}</HelperText>
                     
                 </View>
-                <View style={{marginVertical: 5}}>
+                <View style={styles.textInputContainer}>
                     <TextInput 
                         mode='outlined' 
                         label={'Senha'} 
                         secureTextEntry={true}
                         onChangeText={(text) => {setPw(text)}}
+                        style={styles.textInputStyle}
                     />
                     <HelperText type="error" visible={true}>{pwError}</HelperText>
                 </View>
-                <View style={{marginVertical: 10}}>
+                {/* textInput confirmar senha (descomentar o pw2Error)
+                <View style={styles.textInputContainer}>
                     <TextInput 
                         mode='outlined' 
                         label={'Confirmar senha'} 
@@ -86,12 +99,13 @@ export default function SignUp() {
                                     setPw2Error("")
                                 } else 
                                     setPw2Error("As senhas não são iguais") 
-                            }   
+                            }
                         }
+                        style={styles.textInputStyle}
                     />
                     <HelperText type="error" visible={true}>{pw2Error}</HelperText>
 
-                </View>
+                </View> */}
             </View>
             <View style={styles.buttonContainer}>
                 <Button style={styles.buttonStyle} 
@@ -120,6 +134,12 @@ const styles = StyleSheet.create({
         margin: 10,
         padding: 10,
     },
+    textInputContainer:{
+        marginVertical: 0
+    },
+    textInputStyle:{
+        height: 40,
+    },
     buttonContainer:{
         flexDirection: "row",
         justifyContent:"center",
@@ -128,6 +148,6 @@ const styles = StyleSheet.create({
         margin: 10,
         padding: 10,
     },
-    
+
 
 })

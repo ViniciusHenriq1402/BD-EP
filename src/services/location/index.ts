@@ -5,7 +5,6 @@ export async function isTrackingLocation(): Promise<boolean>{
     const isTracking = await Location.hasStartedLocationUpdatesAsync(LOCATION_TASK)
     .then( () => true, () => false)
     .catch(error => console.log(error))
-    //TODO: Check with logs
     return isTracking as boolean;
   }
 

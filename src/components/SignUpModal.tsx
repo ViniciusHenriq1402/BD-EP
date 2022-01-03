@@ -1,4 +1,4 @@
-import React from 'react';
+/* import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { View, Text, StyleSheet } from 'react-native'
 import { Button, HelperText, Modal, Portal, TextInput } from 'react-native-paper';
@@ -117,3 +117,4 @@ const styles = StyleSheet.create({
 export default SignUp
 
 
+ */

@@ -1,51 +1,20 @@
 import React from "react";
-import { LocationObject } from "expo-location";
 import { View, Text, StyleSheet } from "react-native";
 import MapView from 'react-native-maps';
 import { Marker } from "react-native-maps";
 import { Button, FAB, Modal, Portal } from "react-native-paper";
 import { mapasProps } from "../../routes/params/AppStackParams";
-import { useLocationTracking } from "../../services/location/useLocation";
-import { addLocation, clearLocations, getLocations } from "../../services/location/storeLocation";
-import { issick, posicao } from "../../services/api";
 import { useAuth } from "../../contexts/auth";
-
-
-
+import { useInfected } from "../../contexts/infected";
 
 const Mapas: React.FC<mapasProps> = ( {navigation, route} ) =>{
 
   const [isVisible, setIsVisible] = React.useState(false);
-  const locationTrack = useLocationTracking();
-  const { signOut } = useAuth()
+  const { locationTrack } = useInfected();
 
-
-  React.useEffect( () => {
-    if (!locationTrack.isTracking) locationTrack.startTracking();
-    const interval = setInterval(async () => {
-      const response = await issick();
-      console.log('useeffect do map')
-
-    }, 10000) 
-    return () => {
-      clearInterval(interval)
-    } 
-  },[locationTrack.isTracking]) 
-
-  function handleSignOut() {
-    if (locationTrack.isTracking) {
-      locationTrack.stopTracking();
-    } 
-    locationTrack.clearTracking();
-    signOut()
-  }
   function clearStorage(){
     locationTrack.clearTracking()
   }
-  function consoleLog(){
-    console.log('locations tem', locationTrack.locations.length)
-  }
-  
  
   return (
     <View style={{...StyleSheet.absoluteFillObject}}>
@@ -78,9 +47,7 @@ const Mapas: React.FC<mapasProps> = ( {navigation, route} ) =>{
           }
           </View>
           <View style={styles.buttonContainer}>
-            <Button mode="contained" onPress={handleSignOut}>Sign out</Button>
             <Button mode="contained" onPress={clearStorage}>Clear Storage</Button>
-            <Button mode="contained" onPress={consoleLog}>Print</Button>
           </View>
         </Modal>
       </Portal>
@@ -122,15 +89,3 @@ textContainer:{
 },
   
 });
-/**<View style={styles.textContainer}>  
-          {(locationTrack.locations) ? 
-            locationTrack.locations.map((location, index) => {
-              <Text key={index}
-              style={{ fontSize: 16, fontWeight: "bold" }}>
-                Latitude: {location.coords.latitude} 
-                Longitude: {location.coords.longitude}
-              </Text>     
-            }) : <></>
-          }
-          </View>
-           */

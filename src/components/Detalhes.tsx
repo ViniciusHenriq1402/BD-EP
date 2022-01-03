@@ -1,4 +1,4 @@
-import React from "react";
+/* import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Button, Modal, Portal } from "react-native-paper";
 import * as Location from 'expo-location';
@@ -124,4 +124,4 @@ export default Details;
     </Modal>
   </Portal>
 )
- */
+ */ 

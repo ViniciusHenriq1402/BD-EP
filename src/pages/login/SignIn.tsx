@@ -35,8 +35,8 @@ export default function SignIn() {
             </View>
             <View style={styles.buttonContainer}>
                 <Button style={styles.buttonStyle} color="red" 
-                mode="outlined" onPress={() => navigation.navigate("SignUp")}>
-                    Sign Up
+                mode="outlined" onPress={() => navigation.goBack()}>
+                    Voltar
                 </Button>
                 <Button style={styles.buttonStyle} 
                 mode="contained" onPress={handleSign}> 

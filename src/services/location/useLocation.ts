@@ -3,13 +3,15 @@ import { isTrackingLocation, startTracking, stopTracking } from '.';
 import * as Storage from './storeLocation'
 import * as TaskManager from "expo-task-manager";
 import { LocationObject } from 'expo-location';
-import { posicao } from '../api';
+import { postUserLocation } from '../api';
+import { useAuth } from '../../contexts/auth';
 
 
 export const LOCATION_TASK = 'background-location-task'
 
 export function useLocationTracking() {
   
+  const { token } = useAuth()
   const [locations, setLocations] = useState<LocationObject[]>([]);
   const [isTracking, setIsTracking] = useState<boolean>();
   
@@ -18,6 +20,7 @@ export function useLocationTracking() {
     console.log('[tracking]', "inicio monitoramento")
     setIsTracking(true);
     Storage.getLocations().then((array)=>setLocations(array));
+    
 
   }, []);
 
@@ -32,12 +35,11 @@ export function useLocationTracking() {
       await onStopTracking();
     }
     await Storage.clearLocations();
+    setIsTracking(false)
+    setLocations([])
     
-    }, [isTracking, locations]);
-
-  useEffect(() => {
-    isTrackingLocation().then(setIsTracking)
-    console.log('effect do useLocation')
+    },[] );
+  
     TaskManager.defineTask(LOCATION_TASK, async( { data: locationsArr , error } ) => {
       if (error) {
             console.error(error.message)
@@ -59,18 +61,14 @@ export function useLocationTracking() {
 
         }
         setLocations(arr)
-        const response = await posicao(location.coords.latitude, location.coords.longitude);
-    
+        if(!!token) {
+          const response = await postUserLocation( token, location.coords.latitude, location.coords.longitude, location.timestamp);
+        }
       }
     })
-    return () => {
-      if (isTracking) {
-        onStopTracking();
-        
-        TaskManager.unregisterAllTasksAsync()
-        console.log('cleanup useEffect')
-      }
-    }
+  useEffect(() => {
+    
+    
   }, []);
 
   return {

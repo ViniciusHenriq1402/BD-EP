@@ -1,9 +1,9 @@
-import { EventEmitter, LocationObject } from "expo-location";
+/* import { EventEmitter, LocationObject } from "expo-location";
 import * as TaskManager from "expo-task-manager";
 import { posicao } from "../services/api";
 import { addLocation } from "../services/location/storeLocation";
 
-
+ */
 export const LOCATION_TASK = 'background-location-task'
 
 /* 
