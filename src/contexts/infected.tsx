@@ -1,11 +1,12 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LocationObject } from "expo-location";
 import React, { createContext } from "react";
-import * as api from "../services/api";
 import { useLocationTracking } from "../services/location/useLocation";
-import { useAuth } from "./auth";
-
-
+import * as TaskManager from "expo-task-manager";
+import * as BackgroundFetch from 'expo-background-fetch';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { issick } from "../services/api/api";
+import { useAuth } from "../contexts/auth";
+import { BACKGROUND_FETCH_TASK } from "../tasks/BackgroundFetch";
 interface InfectedContextData {
 
     locationTrack: {
@@ -23,7 +24,7 @@ const InfectedContext = createContext<InfectedContextData>({} as InfectedContext
 
 const InfectedProvider: React.FC = ({ children }) => {
   
-  const { signOut } = useAuth() 
+  const { signOut, token } = useAuth() 
 
   const locationTrack = useLocationTracking();
 
@@ -52,6 +53,22 @@ const InfectedProvider: React.FC = ({ children }) => {
       .catch( (reason) => console.log(reason) );
       signOut();
   }
+
+  TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
+
+    //dados da resposta do backend
+    //pode ser void ou string
+    let response: boolean | void
+    if(!!token) {
+      response = await issick(token);
+    }
+
+    
+    // return pra onde?
+    if(BackgroundFetch.Result.NewData && response) await AsyncStorage.setItem('@Api:issick', response.toString())
+    return response ? BackgroundFetch.Result.NewData : BackgroundFetch.Result.NoData;
+
+  });
 
   return (
   <InfectedContext.Provider value={{ locationTrack, handleSignOut }}>

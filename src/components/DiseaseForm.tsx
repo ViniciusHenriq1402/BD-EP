@@ -1,4 +1,4 @@
-import React from "react";
+/* import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Button, Checkbox, Modal } from "react-native-paper";
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -131,12 +131,7 @@ const DiseaseForm: React.FC<props> = (props) =>{
         
       </View> 
       <View style={styles.buttonContainer}>
-          {/* <Button style={styles.buttonStyle} 
-          mode="outlined" 
-          color="grey" 
-              onPress={() => setShowDatePicker(false)}>
-          Voltar
-          </Button> */}
+          
           <Button style={styles.buttonStyle} color="red" 
           mode="contained" 
           onPress={onSubmit}>
@@ -189,3 +184,4 @@ const styles = StyleSheet.create({
 })
 
 export default DiseaseForm;
+ */

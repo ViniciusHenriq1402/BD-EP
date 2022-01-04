@@ -3,7 +3,7 @@ import { isTrackingLocation, startTracking, stopTracking } from '.';
 import * as Storage from './storeLocation'
 import * as TaskManager from "expo-task-manager";
 import { LocationObject } from 'expo-location';
-import { postUserLocation } from '../api';
+import { postUserLocation } from '../api/LocationApi';
 import { useAuth } from '../../contexts/auth';
 
 
@@ -52,7 +52,6 @@ export function useLocationTracking() {
         const location = Object.values(locationsArr)[0][0] as LocationObject;
         Storage.addLocation(location)
         const arr = locations
-        
         if(locations.length > 10 ){
           arr.shift()
           arr.push(location)
@@ -61,8 +60,9 @@ export function useLocationTracking() {
 
         }
         setLocations(arr)
+        //console.log( new Date(location.timestamp).toISOString() )
         if(!!token) {
-          const response = await postUserLocation( token, location.coords.latitude, location.coords.longitude, location.timestamp);
+          const response = await postUserLocation( token, location.coords.latitude, location.coords.longitude, new Date(location.timestamp).toISOString());
         }
       }
     })

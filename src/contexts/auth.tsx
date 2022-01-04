@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as TaskManager from "expo-task-manager";
 import React, { createContext, useState } from "react";
-import * as api from "../services/api";
+import { postUserLogin } from "../services/api/UserApi";
 import { registerBackgroundFetchAsync } from "../tasks/BackgroundFetch";
 
 interface User {
@@ -30,7 +30,7 @@ const AuthProvider: React.FC = ({ children }) => {
     
     var cpf = "tony";
     var pw = "batata";
-    let response = await api.postUserLogin(cpf, pw);
+    let response = await postUserLogin(cpf, pw);
     response = "wadsa"
     if(response) {
       
