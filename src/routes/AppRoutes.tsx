@@ -1,6 +1,4 @@
 import React from 'react';
-import {createStackNavigator} from '@react-navigation/stack';
-//import Details from '../components/Detalhes';
 import { AppStackParamsList } from './params/AppStackParams';
 import Mapas from '../pages/map/Map';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';

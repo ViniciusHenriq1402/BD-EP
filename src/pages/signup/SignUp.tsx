@@ -6,6 +6,7 @@ import { signUpProp } from "../../routes/params/AuthStackParams";
 import validateCPF from "../../helper/validateCPF";
 import validateEmail from "../../helper/validateEmail";
 import validatePw from "../../helper/validatePw";
+import { postUser } from "../../services/api/UserApi";
 
 
 
@@ -13,6 +14,7 @@ export default function SignUp() {
     
     const navigation = useNavigation<signUpProp>()
 
+    const [name, setName] = React.useState("")
     const [cpf, setCpf] = React.useState("")
     const [email, setEmail] = React.useState("")
     const [pw, setPw] = React.useState("")
@@ -22,7 +24,7 @@ export default function SignUp() {
     const [pwError, setPwError] = React.useState("")
     //const [pw2Error, setPw2Error] = React.useState("")
 
-    function cadastroApertado(){
+    async function cadastroApertado(){
         const cpfE = validateCPF(cpf);
         const emailE = validateEmail(email);
         const pwE = validatePw(pw);
@@ -40,6 +42,9 @@ export default function SignUp() {
             setEmailError("")
             setPwError("")
             //setPw2Error("")
+            console.log(name, pw, email, cpf)
+            const response = await postUser(name, pw, email, cpf)
+            
             navigation.navigate("SignIn")
         }
     }
@@ -51,8 +56,10 @@ export default function SignUp() {
                 <View style={styles.textInputContainer}>
                     <TextInput 
                         mode='outlined' 
-                        label={'Nome Completo'} 
+                        label={ 'Full Name' } 
+                        placeholder={(!name)? name: 'Nome Completo'}
                         style={styles.textInputStyle}
+                        onChangeText={(text) => {setName(text)}}
                     />
                     <HelperText type="error" visible={true}>{/*erro no nome?*/ }</HelperText>
 
@@ -61,6 +68,7 @@ export default function SignUp() {
                     <TextInput 
                         mode='outlined' 
                         label={'CPF'} 
+                        placeholder={(!cpf)? cpf: 'CPF'}
                         onChangeText={(text) => {setCpf(text)}}
                         style={styles.textInputStyle}
 
@@ -70,7 +78,9 @@ export default function SignUp() {
                 </View>
                 <View style={styles.textInputContainer}>
                     <TextInput 
-                        mode='outlined' label={'Email'} 
+                        mode='outlined' 
+                        label={'Email'} 
+                        placeholder={(!email)? email: 'Email'}
                         onChangeText={(text) => {setEmail(text)}}
                         style={styles.textInputStyle}
                     />
@@ -81,6 +91,8 @@ export default function SignUp() {
                     <TextInput 
                         mode='outlined' 
                         label={'Senha'} 
+                        placeholder={(!pw)? pw: 'Password'}
+
                         secureTextEntry={true}
                         onChangeText={(text) => {setPw(text)}}
                         style={styles.textInputStyle}
@@ -112,11 +124,11 @@ export default function SignUp() {
                 mode="outlined" 
                 color="grey" 
                     onPress={() => navigation.goBack()}>
-                Voltar
+                Back
                 </Button>
                 <Button style={styles.buttonStyle} color="red" 
                 mode="contained" onPress={() => cadastroApertado()}>
-                    Cadastrar
+                    Sign Up
                 </Button>
                 
             </View>

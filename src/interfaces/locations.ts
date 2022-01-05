@@ -1,5 +1,6 @@
-export interface locations{
+export interface ILocations{
     lat: number,
     long: number,
-    datetime: string
+    datetime?: string
+    userLocationId?: string
 }

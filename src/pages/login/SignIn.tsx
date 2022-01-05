@@ -15,7 +15,7 @@ export default function SignIn() {
     const [pw, setPw] = React.useState("")
     async function handleSign() {
 
-        signIn();
+        signIn(cpf, pw);
     }
 
     return (

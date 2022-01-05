@@ -1,3 +1,4 @@
+import { IGetUserResponse, IUser } from "../../interfaces/user";
 import { api } from "./api";
 
 export async function postUser(
@@ -8,18 +9,46 @@ export async function postUser(
         email:email,
         document:document
       }, )
-      .then(response => response.data)
-      .catch(reason => console.log('[api] post User', reason))
-      return response
+      .then(response => {console.log("[api] then post user ", response.status)} )
+      .catch(reason => console.log('[api] catch post User', reason.status))
+      
     }
   
-  export async function postUserLogin( cpf:string, pw:string ) : Promise<string | void>{
-    const response = await api.post('/User/login', {
+  export async function postUserLogin( cpf:string, pw:string ) : Promise<IUser | void>{
+    const response = await api.post<IUser>('/User/login', {
       document: cpf, password: pw
     }, )
-    .then(response => response.data)
-    .catch(error => console.log(error))
+    .then(
+      response => {
+        console.log('[api] then post User login', response.status)
+        return response.data
+      })
+    .catch(reason => console.log('[api] catch post User login', reason.status))
     
-    console.log(`[api] login com ${cpf} e ${pw}`);
+    if(!!response){
+      return response
+    }
+    return undefined;
    
+  }
+
+  export async function getUser(user:IUser) : Promise<IUser>{
+    
+    const response = await api.get<IGetUserResponse>(`/User/${user.document}`, {
+      headers:{
+        token: user.token
+      }
+    })
+    .then(
+      response => {
+        console.log('[api] then post User login', response.status)
+        user.name = response.data.name
+        user.email = response.data.email
+        user.id = response.data.id
+        return user
+      })
+    .catch(reason => console.log('[api] catch get User login', reason.status))
+    
+    return (response) ? response : user;
+    
   }

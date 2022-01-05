@@ -5,25 +5,25 @@ import { useInfected } from "../../contexts/infected";
 import { useAuth } from "../../contexts/auth";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import DropDownPicker, { ItemType, ValueType } from 'react-native-dropdown-picker';
-import { getDiseases, getUserDiseases, postUserDisease, patchUserDisease } from "../../services/api/DiseaseApi";
+import { /* getDiseases, getUserDiseases, */ postUserDisease, patchUserDisease } from "../../services/api/DiseaseApi";
 
 
 export default function Profile() {
     
     const { handleSignOut } = useInfected();
-    const { token } = useAuth()
+    const { token, user } = useAuth()
 
     const [isVisibleAddDisease, setIsVisibleAddDisease] = React.useState<boolean>(false)
     const [isVisibleEditDisease, setIsVisibleEditDisease] = React.useState<boolean>(false)
 
     //dropdown Add disease
     const [showDropDownAdd, setShowDropDownAdd] = React.useState(false);
-    const [diseases, setDiseases] = React.useState<ItemType[]>([])
+    //const [diseases, setDiseases] = React.useState<ItemType[]>([])
     const [valueAdd, setValueAdd] = React.useState<ValueType | null>(null);
     
     //dropdown edit disease
     const [showDropDownEdit, setShowDropDownEdit] = React.useState(false);
-    const [userDiseases, setUserDiseases] = React.useState<ItemType[]>([])
+    //const [userDiseases, setUserDiseases] = React.useState<ItemType[]>([])
     const [valueEdit, setValueEdit] = React.useState<ValueType | null>(null);
 
     //checkbox for add disease
@@ -46,10 +46,9 @@ export default function Profile() {
     const [endDateEdit, setEndDateEdit] = React.useState<Date>( new Date(Date.now()) );
     const [showEndDatePickerEdit, setShowEndDatePickerEdit] = React.useState<boolean>(false);
     
-    const [value, setValue] = React.useState<ValueType | null>(null);
     const [items, setItems] = React.useState([
-        {label: 'Apple', value: 'apple'},
-        {label: 'Banana', value: 'banana'}
+        {label: 'Covid', value: 'Covid'},
+        
     ]);
   
     const onChangeStartDate = (event: any, date?:Date | undefined): void => {
@@ -67,10 +66,29 @@ export default function Profile() {
     };  
     const onChangeEndDateEdit = (event: any, date?:Date | undefined): void => {
         const currentDate = date || endDate;
-        setShowEndDatePicker(false)
+        setShowEndDatePickerEdit(false)
         //console.log(currentDate.toISOString())
         setEndDateEdit(currentDate);
     };
+
+    function cleanFields() {
+    setIsVisibleAddDisease(false)
+    setIsVisibleEditDisease(false)
+    setShowDropDownAdd(false);
+    setValueAdd(null);
+    setShowDropDownEdit(false);
+    setValueEdit(null);
+    setCured(false)
+    setSymptoms(false)
+    setCuredEdit(false)
+    setSymptomsEdit(false)
+    setShowStartDatePicker(false);
+    setStartDate( new Date(Date.now()) );
+    setEndDate( new Date(Date.now()) );
+    setShowEndDatePicker(false);
+    setEndDateEdit( new Date(Date.now()) );
+    setShowEndDatePickerEdit(false);
+    }
 
     const onSubmitAddDisease = async () =>{
         //0001-01-01T12:00:00Z
@@ -81,28 +99,28 @@ export default function Profile() {
                 symptoms, 
                 startDate.toISOString(), 
                 (cured)? endDate.toISOString() : "0001-01-01T12:00:00Z")
+                cleanFields()
         }else {
-            console.log("submitAddDisease" ,token,valueAdd)
+            console.log("submitAddDisease" ,token, valueAdd)
         } 
-        setIsVisibleAddDisease(false)
     }
 
     const onSubmitEditDisease = async () => {
-        if(!!token && !!valueAdd) {
+        if(!!token && !!valueEdit) {
             await patchUserDisease(token, 
-                valueEdit as string, 
+                'b36b7e26-deb4-44ad-ac41-51ce4a684683' as string, 
                 curedEdit, 
                 symptomsEdit, 
                 (cured)? endDateEdit.toISOString() : "0001-01-01T12:00:00Z")
+                cleanFields()
         }else {
-            console.log("submitAddDisease" ,token,valueEdit)
+            console.log("submitAddDisease" ,token, valueEdit)
         } 
-        setIsVisibleEditDisease(false)
     }
   
     React.useEffect( () => {
         //get diseases for dropdown
-        async function getDiseaseNames(){
+        /* async function getDiseaseNames(){
             let arr = [] as ItemType[]
             if(!!token) {
                 arr = await getDiseases(token)
@@ -119,25 +137,25 @@ export default function Profile() {
             setUserDiseases(arr)     
         } 
         getDiseaseNames()
-        getUserDiseaseNames()
+        getUserDiseaseNames() */
     },[])
 
     return (
         <View style={styles.container}>
             <View style={styles.textContainer}>
-                <View style={styles.InputContainer}>
+                <View style={styles.TextContainer}>
                     <Text style={styles.textLeft}>Nome:</Text>
-                    <Text style={styles.textRight}>Tony Batata</Text>
+                    <Text style={styles.textRight}>{(user) ? user.name: 'Name batata'}</Text>
 
                 </View>
-                <View style={styles.InputContainer}>
+                <View style={styles.TextContainer}>
                     <Text style={styles.textLeft}>CPF:</Text>
-                    <Text style={styles.textRight}>12312312312</Text>
+                    <Text style={styles.textRight}>{(user) ? user.document: 'CPF noto gibben'}</Text>
 
                 </View>
-                <View style={styles.InputContainer}>
+                <View style={styles.TextContainer}>
                     <Text style={styles.textLeft}>Email:</Text>
-                    <Text style={styles.textRight}>awdsda@gmail.com</Text>
+                    <Text style={styles.textRight}>{(user) ? user.email: 'email not given'}</Text>
 
                 </View>
             </View>
@@ -175,7 +193,7 @@ export default function Profile() {
             <Portal>
                 <Modal visible={isVisibleAddDisease}
                 contentContainerStyle={styles.modalContainer}
-                onDismiss={() => {setIsVisibleAddDisease(false)}}>
+                onDismiss={() => {cleanFields()}}>
                     
                 <View style={styles.formContainer}>
                     <View style={styles.InputContainer}>
@@ -183,16 +201,13 @@ export default function Profile() {
                         <DropDownPicker
                         open={showDropDownAdd}
                         setOpen={setShowDropDownAdd}
-                        value={value}
+                        value={valueAdd}
                         items={items}
-                        setValue={setValue}
+                        setValue={setValueAdd}
                         setItems={setItems}
-                        //value={valueAdd}
                         //items={userDiseases}
-                        //setValue={setValueAdd}
                         //setItems={setUserDisease}
                         placeholder="Disease"
-                        zIndex={10}
                         listMode="MODAL"
                         style={{ width:'60%', height:"100%", }}
                         dropDownContainerStyle={{ width:'60%',}}
@@ -235,13 +250,18 @@ export default function Profile() {
                         />
                         )}
                     </View>   
-                    {cured && (<View style={styles.InputContainer}>
+                    {cured && (
+                    <View style={styles.InputContainer}>
                         <Text style={{ alignSelf:'center',width:"40%", marginHorizontal:'5%'}}>When did you get treated?</Text>
-                        <Button onPress={() => setShowEndDatePicker(true)} mode='outlined' 
+                        <Button 
+                        onPress={() => setShowEndDatePicker(true)} 
+                        mode='outlined' 
                         color="black"
-                        style={{alignSelf:'center', height:"100%", width:'50%', borderColor:'white'}}>
+                        style={{alignSelf:'center', height:"100%", width:'50%', borderColor:'white'}}
+                        >
                         {endDate.toDateString()}
                         </Button>
+
                         {showEndDatePicker &&  (
                         <DateTimePicker
                         testID="dateEndTimePicker"
@@ -265,21 +285,19 @@ export default function Profile() {
 
                 <Modal visible={isVisibleEditDisease}
                 contentContainerStyle={styles.modalContainer}
-                onDismiss={() => {setIsVisibleEditDisease(false)}}>
+                onDismiss={() => {cleanFields()}}>
                     
                 <View style={styles.formContainer}>
                 <View style={styles.InputContainer}>
                         <Text style={{  alignSelf:'center',width:"30%", marginHorizontal:'5%'}}>Disease name</Text>
                         <DropDownPicker
                         open={showDropDownEdit}
-                        //value={valueEdit}
                         //items={userDiseases}
-                        //setValue={setValueEdit}
                         //setItems={setUserDisease}
-                        value={value}
+                        value={valueEdit}
                         items={items}
                         setOpen={setShowDropDownEdit}
-                        setValue={setValue}
+                        setValue={setValueEdit}
                         setItems={setItems}
                         placeholder="Disease"
                         zIndex={10}
@@ -308,17 +326,21 @@ export default function Profile() {
                     </View>
 
                     
-                    {curedEdit && (<View style={styles.InputContainer}>
+                    {curedEdit && (
+                    <View style={styles.InputContainer}>
                         <Text style={{ alignSelf:'center',width:"40%", marginHorizontal:'5%'}}>When did you get treated?</Text>
 
-                        <Button onPress={() => setShowEndDatePickerEdit(true)} mode='outlined' 
+                        <Button onPress={() => setShowEndDatePickerEdit(true)} 
+                        mode='outlined' 
                         color="black"
-                        style={{alignSelf:'center', height:"100%", width:'50%', borderColor:'white'}}>
+                        style={{alignSelf:'center', height:"100%", width:'50%', borderColor:'white'}}
+                        >
                         {endDateEdit.toDateString()}
                         </Button>
+
                         {showEndDatePickerEdit &&  (
                         <DateTimePicker
-                        testID="dateEndTimePicker"
+                        testID="dateEndTimePickerEdit"
                         value={endDateEdit}
                         display="default"
                         onChange={onChangeEndDateEdit}
@@ -381,19 +403,26 @@ const styles = StyleSheet.create({
         borderWidth:1,
         borderColor:'grey',
         borderRadius:8,
-        marginHorizontal:"13%",
+        marginHorizontal:"10%",
         padding:5,
-        marginBottom: 30
+        marginBottom: 30,
+        position: "relative",
     },
     textLeft:{  
         fontSize:20,
-        alignSelf:'center',
-        width:"30%", 
+        width:"20%",
+        maxWidth:"30%",
     }, 
     textRight: {
-        fontSize:20,
-        alignSelf:'center',
-        textAlign:'right'
+        fontSize:18,
+        textAlign:'right',
+        maxWidth:"72%",
+    },
+    TextContainer:{
+        width:"100%",
+        position:'relative',
+        flexDirection:'row',
+        marginVertical: 5
     }
 
 })

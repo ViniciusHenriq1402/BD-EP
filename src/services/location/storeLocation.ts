@@ -21,7 +21,6 @@ export async function addLocation(location: LocationObject): Promise<LocationObj
     
     await setLocations(locations);
     console.log('[storage]', 'added location lat', location.coords.latitude, 'lon', location.coords.longitude);
-    console.log('[storage]', 'location length', locations.length);
     return locations;
 }
 

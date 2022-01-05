@@ -2,7 +2,7 @@ export default function validateCPF(strCPF:string) {
     var Soma;
     var Resto;
     Soma = 0;
-    if (strCPF.length < 11) return 'CPF deve ter 11 dígitos'
+    /* if (strCPF.length < 11) return 'CPF deve ter 11 dígitos'
     if (strCPF == "00000000000") return 'CPF Inválido';
 
     for ( var i=1; i<=9; i++ ) Soma = Soma + parseInt(strCPF.substring(i-1, i)) * (11 - i);
@@ -17,6 +17,7 @@ export default function validateCPF(strCPF:string) {
 
     if ((Resto == 10) || (Resto == 11))  Resto = 0;
     if (Resto != parseInt(strCPF.substring(10, 11) ) ) 'CPF Inválido';
-    return '';
+    return ''; */
+    return ""
 }
 // testar var strCPF = "12345678909";
