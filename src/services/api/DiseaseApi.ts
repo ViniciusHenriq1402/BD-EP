@@ -1,4 +1,4 @@
-import { api } from "./api";
+import { api, source } from "./api";
 import { ItemType,  } from "react-native-dropdown-picker";
 import { IDisease } from "../../interfaces/disease";
 
@@ -12,17 +12,17 @@ import { IDisease } from "../../interfaces/disease";
     return []
   } */
   
-/*   export async function getUserDiseases(token:string): Promise<ItemType[]>{
-    const response = await api.get<disease[]>(`/User/${token}/diseases`, {headers:{token:token}})
-    .then(response => response.data.map( (disease) => { 
-      return {label: disease.name, value: disease.id} as ItemType; 
-    }))
+  export async function getUserDiseases(token:string): Promise<ItemType[] | void>{
+    const response = await api.get<IDisease[]>(`/User/${token}/diseases`, {headers:{token:token}})
+    .then(response => {
+      console.log("[api] then getUserDisease", response.status)
+      return [{label: 'Covid', value: response.data[0].id}] as ItemType[]
+    })
     .catch(reason => console.log('[api] getDisease', reason))
     if(!!response) return response
-    console.log("[api] get userdisease erro")
-    return []
+    return undefined
     
-  } */
+  }
   
   export async function postUserDisease(
     token:string, 
@@ -64,4 +64,21 @@ import { IDisease } from "../../interfaces/disease";
         })
         .then(response => console.log( '[api] patch disease status', response.status))
         .catch(error => console.log(error))
+      }
+      
+
+      export async function issick(token:string): Promise<string | void> {
+         const response = await api.get<{message:string}>(`/User/${token}/issick`, {
+          cancelToken: source.token,
+          headers:{
+            token: token
+          }
+        })
+        .then(response => {
+          console.log('[api] then issick',  response.status, 'message', response.data)
+          return  response.data.message
+        })
+        .catch(error => console.log()); 
+      
+        return response;
       }

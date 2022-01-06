@@ -12,18 +12,3 @@ export const api = axios.create({
 
 });
 
- export async function issick(token:string): Promise<boolean | void> {
-  /* const response = await api.get<boolean>('/issick', {
-    params: {
-      token: token
-    },
-    cancelToken: source.token,
-    headers:{
-      token: token
-    }
-  })
-  .then(response => response.data)
-  .catch(error => console.log()); */
-
-  return false;
-}

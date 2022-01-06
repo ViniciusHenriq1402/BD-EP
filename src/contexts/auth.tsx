@@ -36,9 +36,7 @@ const AuthProvider: React.FC = ({ children }) => {
       setUser( userResponse )
       setToken(userResponse.token)
       //registerBackgroundFetchAsync()
-      
     } 
-    
   }
 
   async function signOut() {

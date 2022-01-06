@@ -4,27 +4,21 @@ import { View, Text, StyleSheet } from 'react-native'
 import { Button, } from "react-native-paper";
 import { signUpProp } from "../../routes/params/AuthStackParams";
 import { useAuth } from "../../contexts/auth";
+import { useInfected } from "../../contexts/infected";
 
 export default function StatusPage() {
     
     const navigation = useNavigation<signUpProp>()
+    const { UserIssick } = useInfected()
 
     return (
         <View style={styles.container}>
           <Text style={{ fontWeight:"500", fontSize:24, alignSelf:"center", marginTop:20}}>
-              Status 
+              {(!!UserIssick) ? 
+              UserIssick: "Searching..."} 
           </Text>
             
-            <View style={styles.buttonContainer}>
-                <Button style={styles.buttonStyle} 
-                mode="outlined" 
-                color="red" 
-                onPress={() => navigation.goBack()}>
-                Voltar
-                </Button>
-                
-                
-            </View>
+            
         </View>
     )
 }

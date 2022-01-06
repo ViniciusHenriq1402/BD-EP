@@ -5,7 +5,7 @@ import { useInfected } from "../../contexts/infected";
 import { useAuth } from "../../contexts/auth";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import DropDownPicker, { ItemType, ValueType } from 'react-native-dropdown-picker';
-import { /* getDiseases, getUserDiseases, */ postUserDisease, patchUserDisease } from "../../services/api/DiseaseApi";
+import { /* getDiseases,*/ getUserDiseases,  postUserDisease, patchUserDisease } from "../../services/api/DiseaseApi";
 
 
 export default function Profile() {
@@ -23,7 +23,7 @@ export default function Profile() {
     
     //dropdown edit disease
     const [showDropDownEdit, setShowDropDownEdit] = React.useState(false);
-    //const [userDiseases, setUserDiseases] = React.useState<ItemType[]>([])
+    const [userDiseases, setUserDiseases] = React.useState<ItemType[]>([])
     const [valueEdit, setValueEdit] = React.useState<ValueType | null>(null);
 
     //checkbox for add disease
@@ -48,7 +48,6 @@ export default function Profile() {
     
     const [items, setItems] = React.useState([
         {label: 'Covid', value: 'Covid'},
-        
     ]);
   
     const onChangeStartDate = (event: any, date?:Date | undefined): void => {
@@ -108,7 +107,7 @@ export default function Profile() {
     const onSubmitEditDisease = async () => {
         if(!!token && !!valueEdit) {
             await patchUserDisease(token, 
-                'b36b7e26-deb4-44ad-ac41-51ce4a684683' as string, 
+                valueEdit as string, 
                 curedEdit, 
                 symptomsEdit, 
                 (cured)? endDateEdit.toISOString() : "0001-01-01T12:00:00Z")
@@ -127,17 +126,18 @@ export default function Profile() {
             } else 
                 console.log( 'token nao existente. Page profile');
             setDiseases(arr)     
-        } 
+        } */
         async function getUserDiseaseNames(){
-            let arr = [] as ItemType[]
+            let arr: ItemType[] | void
             if(!!token) {
-                arr = await getUserDiseases(token)
+                arr = await getUserDiseases(token);
+                (!!arr) ? setUserDiseases(arr) : arr=undefined    ; 
+
             } else 
                 console.log( 'token nao existente. Page profile');
-            setUserDiseases(arr)     
         } 
-        getDiseaseNames()
-        getUserDiseaseNames() */
+        //getDiseaseNames()
+        getUserDiseaseNames() 
     },[])
 
     return (
@@ -292,13 +292,11 @@ export default function Profile() {
                         <Text style={{  alignSelf:'center',width:"30%", marginHorizontal:'5%'}}>Disease name</Text>
                         <DropDownPicker
                         open={showDropDownEdit}
-                        //items={userDiseases}
-                        //setItems={setUserDisease}
+                        items={userDiseases}
+                        setItems={setUserDiseases}
                         value={valueEdit}
-                        items={items}
                         setOpen={setShowDropDownEdit}
                         setValue={setValueEdit}
-                        setItems={setItems}
                         placeholder="Disease"
                         zIndex={10}
                         listMode="MODAL"

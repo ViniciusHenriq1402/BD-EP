@@ -4,7 +4,7 @@ import { useLocationTracking } from "../services/location/useLocation";
 import * as TaskManager from "expo-task-manager";
 import * as BackgroundFetch from 'expo-background-fetch';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { issick } from "../services/api/api";
+import { issick } from "../services/api/DiseaseApi";
 import { useAuth } from "../contexts/auth";
 import { BACKGROUND_FETCH_TASK } from "../tasks/BackgroundFetch";
 interface InfectedContextData {
@@ -17,6 +17,7 @@ interface InfectedContextData {
         clearTracking: () => Promise<void>;
     };
     handleSignOut(): void;
+    UserIssick: string | null;
 
 } 
 
@@ -25,20 +26,21 @@ const InfectedContext = createContext<InfectedContextData>({} as InfectedContext
 const InfectedProvider: React.FC = ({ children }) => {
   
   const { signOut, token } = useAuth() 
-
+  const [UserIssick, setUserIssick] = React.useState<string | null>(null)
   const locationTrack = useLocationTracking();
 
-  /* issick
   React.useEffect( () => {
   const interval = setInterval(async () => {
-      const response = await api.issick();
-      if(response) alert(response)
-  }, 10000) 
+    let response: string | void
+    if(!!token) {
+      response = await issick(token);
+      (!!response) ? setUserIssick(response) : undefined
+    }
+  }, 1000) 
   return () => {
       clearInterval(interval)  
   } 
   })  
-  */
   React.useEffect( () => {
     locationTrack.startTracking();
   },[])
@@ -58,9 +60,10 @@ const InfectedProvider: React.FC = ({ children }) => {
 
     //dados da resposta do backend
     //pode ser void ou string
-    let response: boolean | void
+    let response: string | void
     if(!!token) {
       response = await issick(token);
+      (!!response) ? setUserIssick(response) : undefined
     }
 
     
@@ -71,7 +74,7 @@ const InfectedProvider: React.FC = ({ children }) => {
   });
 
   return (
-  <InfectedContext.Provider value={{ locationTrack, handleSignOut }}>
+  <InfectedContext.Provider value={{ locationTrack, handleSignOut, UserIssick } }>
       {children}
   </InfectedContext.Provider>
   );
