@@ -1,18 +1,25 @@
+/* import { EventEmitter, LocationObject } from "expo-location";
 import * as TaskManager from "expo-task-manager";
-import { useContext } from "react";
-import { LocationContext } from "../contexts/location";
+import { posicao } from "../services/api";
+import { addLocation } from "../services/location/storeLocation";
 
-
+ */
 export const LOCATION_TASK = 'background-location-task'
-TaskManager.defineTask('background-location-task', 
-( {data, error}) => {
-    if (error) {
+
+/* 
+TaskManager.defineTask(LOCATION_TASK, async( { data: locations , error } ) => {
+  if (error) {
         console.error(error.message)
         // Error occurred - check `error.message` for more details.
         return;
   }
-  if (data) {
-    const { locations }  = data as any;
-    let counter:number = 0
-    console.log(JSON.stringify(locations))
-  }});
+  if (locations) {
+    //locations eh LocationObjetct[]
+    //{loc: [{"locations":["coords":[object], "timestamp": integer]}]}
+    const location = Object.values(locations)[0][0] as LocationObject;
+    addLocation(location)
+    const response = await posicao(location.coords.latitude, location.coords.longitude);
+
+  }
+})
+ */

@@ -8,15 +8,14 @@ import { signInProp } from "../../routes/params/AuthStackParams";
 export default function SignIn() {
 
     //TODO:Validacao dos TextInput
-
-
+    
     const navigation = useNavigation<signInProp>()
     const { signIn } =  useAuth();
-    const [email, setEmail] = React.useState("")
+    const [cpf, setCpf] = React.useState("")
     const [pw, setPw] = React.useState("")
     async function handleSign() {
 
-        signIn();
+        signIn(cpf, pw);
     }
 
     return (
@@ -25,8 +24,8 @@ export default function SignIn() {
             <View style={ styles.signInContainer }>
               <View style={{marginVertical: 10}}>
                   <TextInput 
-                  mode='outlined' label={'Email'} 
-                  onChangeText={(text) => {setEmail(text)}}/>
+                  mode='outlined' label={'CPF'} 
+                  onChangeText={(text) => {setCpf(text)}}/>
                   </View>
               <View style={{marginVertical: 10}}>
                   <TextInput 
@@ -36,8 +35,8 @@ export default function SignIn() {
             </View>
             <View style={styles.buttonContainer}>
                 <Button style={styles.buttonStyle} color="red" 
-                mode="outlined" onPress={() => navigation.navigate("SignUp")}>
-                    Sign Up
+                mode="outlined" onPress={() => navigation.goBack()}>
+                    Voltar
                 </Button>
                 <Button style={styles.buttonStyle} 
                 mode="contained" onPress={handleSign}> 
@@ -66,6 +65,5 @@ const styles = StyleSheet.create({
         margin: 10,
         padding: 10,
     },
-    
 
 })

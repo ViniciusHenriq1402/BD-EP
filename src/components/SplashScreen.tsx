@@ -1,10 +1,15 @@
 import React from "react";
 import { View, Text } from "react-native";
+import { Card, Portal } from "react-native-paper";
 
 export function SplashScreen() {
     return (
-      <View style={{backgroundColor:"black",flex:1}}>
-        <Text style={{color:"white", fontSize:50}}>Loading...</Text>
-      </View>
+
+      <Portal>
+        <Card style={{backgroundColor:"black", flexWrap:'wrap',}}>
+          <Text style={{color:"white",alignSelf:'auto', fontSize:50}}>Loading...</Text>
+        </Card>
+      </Portal>
+
     );
   }

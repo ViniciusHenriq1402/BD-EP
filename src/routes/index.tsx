@@ -4,6 +4,7 @@ import AuthRoutes from '../routes/AuthRoutes';
 import AppRoutes from '../routes/AppRoutes';
 import { SplashScreen } from "../components/SplashScreen";
 import { useAuth } from "../contexts/auth";
+import { InfectedProvider } from "../contexts/infected";
 
 const Routes: React.FC = () => {
   const { signed, isLoading } = useAuth();
@@ -14,7 +15,11 @@ const Routes: React.FC = () => {
   }
   return( 
     <> 
-      { signed ? <AppRoutes /> : <AuthRoutes />}
+      { signed ? 
+      <InfectedProvider>
+        <AppRoutes />
+      </InfectedProvider> :
+       <AuthRoutes />}
     </>
     );
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
-import {  SafeAreaView, StyleSheet, StatusBar } from 'react-native';
+import {  SafeAreaView, StyleSheet,  } from 'react-native';
 
 import Routes from './routes/index';
 import { AuthProvider } from "./contexts/auth";
@@ -15,7 +15,6 @@ export default function App() {
         <AuthProvider>
           <Routes />
         </AuthProvider>
-        <StatusBar  />
       </NavigationContainer>
     </SafeAreaView>
   );

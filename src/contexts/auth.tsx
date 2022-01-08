@@ -1,72 +1,85 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as TaskManager from "expo-task-manager";
 import React, { createContext, useState } from "react";
-import api from "../services/api";
-import * as auth from "../services/auth";
-import { LOCATION_TASK } from "../tasks/LocationTask";
-import Location from "expo-location"
+import { IUser } from "../interfaces/user";
+import { getUser, postUserLogin } from "../services/api/UserApi";
+import { registerBackgroundFetchAsync } from "../tasks/BackgroundFetch";
 
-interface User {
-  name: string;
-  email: string;
-}
 
 interface AuthContextData {
   signed: boolean;
-  user: object | null;
+  user: IUser | null;
   isLoading: boolean;
-  signIn(): Promise<void>;
+  signIn(cpf:string, pw:string): Promise<void>;
   signOut(): void;
+  token: string | null;
 } 
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 const AuthProvider: React.FC = ({ children }) => {
   
-  const [user, setUser] = useState<User  | null>(null);
+  const [user, setUser] = useState<IUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [token, setToken] = useState<string | null>(null);
 
-  async function signIn() {
-    const response = await auth.signIn();
-    setUser(response.user);
-
-    //api.defaults.headers.Authorization = `Baerer ${response.token}`;
-
-    await AsyncStorage.setItem('@RNAuth:user', JSON.stringify(response.user));
-    await AsyncStorage.setItem('@RNAuth:token', response.token);
+  async function signIn(cpf:string, pw:string) {
+    
+    let response = await postUserLogin(cpf, pw);
+    //console.log( "login response", response )
+    
+    if(response) {
+      
+      let userResponse = await getUser(response)
+      
+      await AsyncStorage.setItem('@Auth:user', JSON.stringify(response))
+      setUser( userResponse )
+      setToken(userResponse.token)
+      //registerBackgroundFetchAsync()
+    } 
   }
 
   async function signOut() {
     await AsyncStorage.clear();
+    TaskManager.unregisterAllTasksAsync();
     setUser(null);
   }
 
-  React.useEffect(() => {
-    async function loadStorageData() {
-      const storagedUser = await AsyncStorage.getItem('@RNAuth:user');
-      const storagedToken = await AsyncStorage.getItem('@RNAuth:token');
+ React.useEffect(() => {
 
-      if (storagedUser && storagedToken) {
-        setUser(JSON.parse(storagedUser));
-        //api.defaults.headers.Authorization = `Baerer ${storagedToken}`;
+    async function loadStorageData() {
+      
+      const storagedUser = await AsyncStorage.getItem('@Auth:user');
+      console.log('storagedUser', storagedUser)
+      if (storagedUser ) {
+        const usuario = await JSON.parse(storagedUser) as IUser
+        console.log('usuario', usuario)
+
+        setUser(usuario);
+        setToken(usuario.token)
+        //console.log(`token ${storagedToken}`)
+        console.log( "login token", usuario.token )
+        
       }
       setIsLoading(false)
 
+      
     }
-
+    
     loadStorageData();
-  });
-
   
 
-
+  },[]); 
+  
   return (
-    <AuthContext.Provider value={{ signed: !!user, user, isLoading, signIn, signOut }}>
+    <AuthContext.Provider value={{ signed: !!user, user, isLoading, signIn, signOut, token }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
 function useAuth() {
+
   const context = React.useContext(AuthContext);
 
   if (!context) {

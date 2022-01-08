@@ -1,5 +1,4 @@
-import React, { useContext } from "react";
-import { useNavigation } from "@react-navigation/native";
+/* import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Button, Modal, Portal } from "react-native-paper";
 import * as Location from 'expo-location';
@@ -7,8 +6,9 @@ import { LocationObject } from "expo-location";
 
 import { detailsProps } from "../routes/params/AppStackParams";
 import { useAuth } from "../contexts/auth";
-import {LOCATION_TASK} from "../tasks/LocationTask";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+
+import { useLocationTracking } from "../services/location/useLocation";
+import { clearLocations, getLocations } from "../services/location/storeLocation";
 
 
 
@@ -16,75 +16,63 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const Details: React.FC<detailsProps> = ({navigation, route}) =>{
   
   const { signOut } = useAuth()
+  const [locations, setLocations] = React.useState<LocationObject[]>([]);
 
   const [isVisible, setIsVisible] = React.useState(navigation.isFocused);
-  const [location, setLocation] = React.useState<LocationObject>();
-
-  const [locationBG, setLocationBG] = React.useState<LocationObject>();
-  const [errorMsg, setErrorMsg] = React.useState("");
-
-   const getLocation = React.useCallback ( async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        return;
-      }
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-    }, [])
-
-  let text = 'Waiting..';
-  if (errorMsg) {
-    text = errorMsg;
-  } else if (location) {
-    text = JSON.stringify(location);
-  }
+  
+  const locationTrack = useLocationTracking();
+  
+  React.useEffect( () => {
+    atualizarTexto()
+  }) 
 
   function handleSignOut() {
-    Location.stopLocationUpdatesAsync(LOCATION_TASK);
+    if (locationTrack.isTracking) {
+      locationTrack.stopTracking();
+      locationTrack.clearTracking();
+    } 
     signOut()
   }
-
-  function stopUpdate() {
-    Location.stopLocationUpdatesAsync(LOCATION_TASK);
+  async function clearStorage(){
+    await clearLocations()
   }
 
-  const requestPermission = async () => {
-    const { status } = await Location.requestBackgroundPermissionsAsync();
-    await AsyncStorage.setItem('@RNPermission:string', status)
-    if (status === 'granted') {
-      await Location.startLocationUpdatesAsync(LOCATION_TASK, {
-        accuracy: Location.Accuracy.BestForNavigation,
-        timeInterval: 20
-      });
-  }}
-
-
+  const dismiss = () => {
+    setIsVisible(false)
+    navigation.navigate("Mapas") 
+  }
+  const atualizarTexto = async () => {
+    setLocations( await getLocations() )
+  } 
   return (
-      <Portal>
-        <Modal visible={isVisible}
-            contentContainerStyle={styles.modalContainer}
-            onDismiss={() => {navigation.navigate("Mapas", {locations: location} ); setIsVisible(false);}}>
-          <Text style={{fontSize: 50}}>DETALHES</Text>
-          <View style={{marginVertical: 5, padding: 10, borderRadius: 10, width: '40%'}}>
-              <Button 
-              mode="contained" onPress={getLocation} 
-              >Get Location</Button>
-          </View>
-            <Text style={{ fontSize:16, fontWeight:"bold" }}>Latitude: {location?.coords.latitude} </Text>
-            <Text style={{ fontSize:16, fontWeight:"bold" }}>Longitude: {location?.coords.longitude} </Text>
-          <View style={{marginVertical: 5, padding: 10, borderRadius: 10,}}>
-            <Button mode="contained" onPress={requestPermission}>Start background update</Button>
-          </View>
-            <Text style={{ fontSize:16, fontWeight:"bold" }}>BGlatitude: {locationBG?.coords.latitude} </Text>
-            <Text style={{ fontSize:16, fontWeight:"bold" }}>BGlongitude: {locationBG?.coords.longitude} </Text>
-          <View style={{marginVertical: 5, padding: 10, borderRadius: 10, flexDirection: "row", justifyContent:"center"}}>
-            <Button mode="contained" onPress={handleSignOut}>Sign out</Button>
-            <Button mode="contained" onPress={stopUpdate}>Stop update</Button>
-          </View>
-        </Modal>
-      </Portal>
-    )
+    <Portal>
+      <Modal visible={isVisible}
+          contentContainerStyle={styles.modalContainer}
+          onDismiss={dismiss}>
+        <Text style={{fontSize: 50}}>Detalhes</Text>
+        <View style={styles.textContainer}>
+        
+        {(locations) ? 
+          locations.map((location, index) => {
+            <Text key={index}
+            style={{ fontSize: 16, fontWeight: "bold" }}>
+              Latitude: {location.coords.latitude} 
+              Longitude: {location.coords.longitude}
+            </Text>     
+          }) : <></>
+        }
+        
+        </View>
+          
+
+        
+        <View style={styles.buttonContainer}>
+          <Button mode="contained" onPress={handleSignOut}>Sign out</Button>
+          <Button mode="contained" onPress={clearStorage}>Clear Storage</Button>
+        </View>
+      </Modal>
+    </Portal>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -95,8 +83,45 @@ const styles = StyleSheet.create({
         marginHorizontal: 16,
         alignItems:"center"
       },
+      buttonContainer: {
+        marginVertical: 5, 
+        padding: 10, 
+        borderRadius: 10, 
+        flexDirection: "row", 
+      justifyContent:"center"
+    },
+    textContainer:{
+      marginVertical: 5, 
+      padding: 10, 
+      borderRadius: 10, 
+      width: '40%'
+    },
       
 })
 
 export default Details;
-
+//antigo
+/* return (
+  <Portal>
+    <Modal visible={isVisible}
+        contentContainerStyle={styles.modalContainer}
+        onDismiss={() => {navigation.navigate("Mapas", {locations: location} ); setIsVisible(false);}}>
+      <Text style={{fontSize: 50}}>DETALHES</Text>
+      <View style={{marginVertical: 5, padding: 10, borderRadius: 10, width: '40%'}}>
+          
+      </View>
+        <Text style={{ fontSize:16, fontWeight:"bold" }}>Latitude: {location?.coords.latitude} </Text>
+        <Text style={{ fontSize:16, fontWeight:"bold" }}>Longitude: {location?.coords.longitude} </Text>
+      {/* <View style={{marginVertical: 5, padding: 10, borderRadius: 10,}}>
+        <Button mode="contained" onPress={requestPermission}>Start background update</Button>
+      </View>
+        <Text style={{ fontSize:16, fontWeight:"bold" }}>BGlatitude: {locationBG?.coords.latitude} </Text>
+        <Text style={{ fontSize:16, fontWeight:"bold" }}>BGlongitude: {locationBG?.coords.longitude} </Text> }
+      <View style={{marginVertical: 5, padding: 10, borderRadius: 10, flexDirection: "row", justifyContent:"center"}}>
+        <Button mode="contained" onPress={handleSignOut}>Sign out</Button>
+        <Button mode="contained" onPress={clearStorage}>Clear Storage</Button>
+      </View>
+    </Modal>
+  </Portal>
+)
+ */ 
